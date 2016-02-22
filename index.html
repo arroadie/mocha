@@ -2,13 +2,15 @@
 <head>
 <script src='http://code.jquery.com/jquery-2.2.0.min.js'></script>
 <script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
-<link rel="stylesheet" type="text/css" href="chat.css">
-
+<script src='/public/js/js.cookie.js'></script>
+<link rel="stylesheet" type="text/css" href="public/chat.css">
 </head>
 
 <body>
-<input type="text" id="user_name"/>
-<button id="update_user_name">Update name</button>
+<div id="user_data">
+  <input type="text" id="user_name"/>
+  <button id="update_user_name">Update name</button>
+</div>
 </body>
 
 <div id="chat-box">
@@ -19,7 +21,7 @@
             <ul></ul>
           </div>
 </div>
-
+<div id="message_box"><input type="text" id="message_content"> <button id="send_message">Send</button></div>
 <script>
 var socket = io('http://local.deadpool:3000');
 var user = '';
@@ -36,15 +38,40 @@ socket.on('message', function(message) {
 });
 
 window.addEventListener("load", function() {
+
+  user = Cookies.get("username")
+
+  if(user) {
+    refreshUserData();
+  }
+
+  function refreshUserData() {
+    $("#user_data").html("<div>Welcome, " + user + "</div>");
+  }
+
   $('#update_user_name').on('click', function(ev) {
     ev.preventDefault();
     user = $('#user_name').val();
-    console.log('user', user);
+    document.cookie = `username=${user}`;
+    refreshUserData();
+  });
+
+  $('#send_message').on('click', function(data) {
+    data.preventDefault();
+    var msg = $('#message_content').val();
+    console.log(msg.length);
+    if(!user || msg == ''){
+      return false
+    } else {
+      if(socket.emit('message', {username: user, data: msg})){
+        $("#message_content").val("");
+      }
+    }
   });
 });
 
 function printMessage(message) {
-  $("#messages ul").append(`<li><span class=${side}><p>${message.username}</p><p>${message.data}</p></span></li>`);
+  $("#messages ul").append(`<li><span class=${side}><p>${message.data}</p></span></li>`);
 }
 
 </script>
