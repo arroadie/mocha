@@ -79,7 +79,7 @@ window.addEventListener("load", function() {
     if(!user || msg == ''){
       return false
     } else {
-      if(socket.emit('message', {username: user, data: msg})){
+      if(socket.emit('message', {user_name: user, data: msg})){
         $("#message_content").val("");
       }
     }
@@ -88,7 +88,7 @@ window.addEventListener("load", function() {
 });
 
 function printMessage(data) {
-  $("#stream").append(`<div class="message"><div class="username">${data.username}</div><div class="message">${data.message}</div></div>`);
+  $("#stream").append(`<div class="message"><div class="username">${data.user_name}</div><div class="message">${data.message}</div></div>`);
 }
 
 </script>
