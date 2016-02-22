@@ -36,10 +36,7 @@ socket.on('connect', function (data) {
 });
 
 socket.on('message', function(data) {
-<<<<<<< Updated upstream
-=======
   console.log(data.user_name + ': ' + data.message);
->>>>>>> Stashed changes
   printMessage(data);
   side = (side == 'left') ? 'right' : 'left';
 });
@@ -51,14 +48,6 @@ socket.on('history', function(data) {
 });
 
 window.addEventListener("load", function() {
-<<<<<<< Updated upstream
-  user = Cookies.get("username")
-
-  if(user) {
-    refreshUserData();
-  }
-
-=======
 
   function user() {
     return Cookies.get("username") ? Cookies.get("username") : false;
@@ -80,7 +69,6 @@ window.addEventListener("load", function() {
     }
   }
 
->>>>>>> Stashed changes
   $('#update_user_name').on('click', function(ev) {
     ev.preventDefault();
     Cookies.set("username", $('#user_name').val());
