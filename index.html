@@ -1,30 +1,34 @@
 <html>
 <head>
-<script src='http://code.jquery.com/jquery-2.2.0.min.js'></script>
-<script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
-<script src='/public/js/js.cookie.js'></script>
-<link rel="stylesheet" type="text/css" href="public/chat.css">
+  <!-- Javascripts -->
+  <script src='http://code.jquery.com/jquery-2.2.0.min.js'></script>
+  <script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
+  <script src='/public/js/js.cookie.js'></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" type="text/css" href="public/chat.css">
+
+  <!-- Fonts -->
+  <link href='https://fonts.googleapis.com/css?family=Poppins:300' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
-<div id="user_data">
-  <input type="text" id="user_name"/>
-</div>
-<div class="user_actions">
-  <button id="update_user_name">Update name</button>
-  <button id='logout'>Logout</button>
-<div>
-</body>
+  <div class="header">Test Room</div>
+  <div id="user_data">
+    <input type="text" id="user_name" placeholder="Please write your username to continue"/>
+  </div>
+  <div class="user_actions">
+    <button id="update_user_name">Set Username</button>
+    <button id='logout'>Logout</button>
+  <div>
 
-<div id="chat-box">
-            <div class="header">
-                Test Room
-            </div>
-            <div id="messages" class="messages">
-            <ul></ul>
-          </div>
-</div>
-<div id="message_box"><input type="text" id="message_content"> <button id="send_message">Send</button></div>
+  <div id="chat-box">
+    <div id="messages" class="messages">
+      <ul></ul>
+    </div>
+    <div id="message_box"><p></p><input type="text" id="message_content"> <button id="send_message">Send</button></div>
+  </div>
+</body>
 
 <script>
 var socket = io('http://local.deadpool:3000');
@@ -36,7 +40,6 @@ socket.on('connect', function (data) {
 });
 
 socket.on('message', function(data) {
-  console.log(data.user_name + ': ' + data.message);
   printMessage(data);
   side = (side == 'left') ? 'right' : 'left';
 });
@@ -57,7 +60,7 @@ window.addEventListener("load", function() {
 
   function refreshUserData() {
     if(user()) {
-      $("#user_data").append("<div id='user_welcome'>Welcome, " + user() + "</div>");
+      $("#message_box p").html("@" + user());
       $("#user_name").hide();
       $('#update_user_name').hide();
       $('#logout').show();
