@@ -133,12 +133,6 @@
                 border-left: 8px solid black;
             }
 
-            .messages ul li span.right
-            {
-                float: right;
-                background-color: #dbedfe;
-            }
-
             .clear
             {
                 clear: both;

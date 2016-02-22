@@ -6,7 +6,7 @@ var Thread = function(data, opts) {
 
   this.user_id = data.user_id || null;
   this.user_name = data.user_name || null;
-  this.message = data.data || '';
+  this.message = data.message || '';
 
   this.parent_id = opts.parent_id || null;
   this.type = opts.type || null;
