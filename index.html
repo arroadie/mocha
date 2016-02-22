@@ -88,7 +88,7 @@ window.addEventListener("load", function() {
     if(!user || msg == ''){
       return false
     } else {
-      if(socket.emit('message', {username: user, data: msg})){
+      if(socket.emit('message', {user_name: user, data: msg})){
         $("#message_content").val("");
       }
     }
