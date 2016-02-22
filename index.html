@@ -9,8 +9,11 @@
 <body>
 <div id="user_data">
   <input type="text" id="user_name"/>
-  <button id="update_user_name">Update name</button>
 </div>
+<div class="user_actions">
+  <button id="update_user_name">Update name</button>
+  <button id='logout'>Logout</button>
+<div>
 </body>
 
 <div id="chat-box">
@@ -33,6 +36,10 @@ socket.on('connect', function (data) {
 });
 
 socket.on('message', function(data) {
+<<<<<<< Updated upstream
+=======
+  console.log(data.user_name + ': ' + data.message);
+>>>>>>> Stashed changes
   printMessage(data);
   side = (side == 'left') ? 'right' : 'left';
 });
@@ -44,31 +51,58 @@ socket.on('history', function(data) {
 });
 
 window.addEventListener("load", function() {
+<<<<<<< Updated upstream
   user = Cookies.get("username")
 
   if(user) {
     refreshUserData();
   }
 
+=======
+
+  function user() {
+    return Cookies.get("username") ? Cookies.get("username") : false;
+  }
+
+  refreshUserData();
+
+  function refreshUserData() {
+    if(user()) {
+      $("#user_data").append("<div id='user_welcome'>Welcome, " + user() + "</div>");
+      $("#user_name").hide();
+      $('#update_user_name').hide();
+      $('#logout').show();
+    } else {
+      $("#user_welcome").remove();
+      $("#user_name").show();
+      $('#logout').hide();
+      $('#update_user_name').show();
+    }
+  }
+
+>>>>>>> Stashed changes
   $('#update_user_name').on('click', function(ev) {
     ev.preventDefault();
-    user = $('#user_name').val();
-    document.cookie = `username=${user}`;
+    Cookies.set("username", $('#user_name').val());
     refreshUserData();
   });
 
   $('#user_name').keypress(function (e) {
-    var key = e.which;
-    if(key == 13) {
-      user = $('#user_name').val();
-      document.cookie = `username=${user}`;
+    if(e.which === 13) {
+      Cookies.set("username",$('#user_name').val());
       refreshUserData();
     }
   });
 
+  $('#logout').on('click', function(e) {
+    e.preventDefault();
+    Cookies.remove("username");
+    refreshUserData();
+  });
+
   $('#message_content').keypress(function (e) {
     var key = e.which;
-    if(key == 13) {
+    if(key === 13) {
       sendMessage();
     }
   });
@@ -85,7 +119,7 @@ function refreshUserData() {
 
 function sendMessage() {
     var msg = $('#message_content').val();
-    if(!user || msg == ''){
+    if(!user || msg === ''){
       return false
     } else {
       if(socket.emit('message', {user_name: user, message: msg})){
