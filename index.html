@@ -22,6 +22,7 @@
           </div>
 </div>
 <div id="message_box"><input type="text" id="message_content"> <button id="send_message">Send</button></div>
+
 <script>
 var socket = io('http://local.deadpool:3000');
 var user = '';
@@ -32,7 +33,6 @@ socket.on('connect', function (data) {
 });
 
 socket.on('message', function(data) {
-  console.log(data.username + ': ' + data.message);
   printMessage(data);
   side = (side == 'left') ? 'right' : 'left';
 });
@@ -44,15 +44,10 @@ socket.on('history', function(data) {
 });
 
 window.addEventListener("load", function() {
-
   user = Cookies.get("username")
 
   if(user) {
     refreshUserData();
-  }
-
-  function refreshUserData() {
-    $("#user_data").html("<div>Welcome, " + user + "</div>");
   }
 
   $('#update_user_name').on('click', function(ev) {
@@ -82,19 +77,22 @@ window.addEventListener("load", function() {
     data.preventDefault();
     sendMessage();
   });
+});
 
-  function sendMessage() {
+function refreshUserData() {
+  $("#user_data").html("<div>Welcome, " + user + "</div>");
+}
+
+function sendMessage() {
     var msg = $('#message_content').val();
     if(!user || msg == ''){
       return false
     } else {
-      if(socket.emit('message', {user_name: user, data: msg})){
+      if(socket.emit('message', {user_name: user, message: msg})){
         $("#message_content").val("");
       }
     }
   }
-
-});
 
 function printMessage(data) {
   var date = new Date(data.timestamp )

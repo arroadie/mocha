@@ -8,19 +8,19 @@ let serve = require('koa-serve');
 let server = require('socket.io')(3000);
 
 // Models
+let Log = require('./models/log');
 let Thread = require('./models/thread');
 
 let pool = [];
 
 server.on('connection', function(socket) {
-  console.log(`Connected client: ${socket.id}`);
+  Log.srv(`Connected client: ${socket.id}`);
 
   // TODO: Join
   socket.on('message', function(data) {
-    console.log(`Message ${socket.id}: ${JSON.stringify(data)}`);
+    console.log(`Message ${data.user_name}: ${data.message}`);
     let response = new Thread(data, { parent_id: 'test' });
     pool.push(response);
-    console.log('response', response);
     server.emit('message', response);
   });
 
@@ -36,7 +36,7 @@ app.use(function* (next) {
   yield next;
   const end = new Date();
 
-  console.log(`[WebApp][${start.toISOString()}] :: ${this.method} ${this.url} processed in ${String(end-start)} ms`);
+  Log.web(`${this.method} ${this.url} processed in ${String(end-start)} ms`);
 });
 
 router.get('/', function(next) {
@@ -45,5 +45,5 @@ router.get('/', function(next) {
 app.use(router.routes());
 
 app.listen(8001);
-console.log('WebApp listening on port 8001');
-console.log('Server listening on port 3000');
+Log.web('Listening on port 8001');
+Log.srv('Listening on port 3000');
