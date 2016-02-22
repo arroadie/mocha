@@ -115,7 +115,7 @@ function sendMessage() {
       return false
     } else {
       var success = socket.emit('message', {
-        user_name: user,
+        user_name: user(),
         message: msg,
         parent_id: parentId
       });
@@ -128,8 +128,8 @@ function sendMessage() {
 
 function printMessage(data) {
   var date = new Date(data.timestamp );
-  var classMessage = (data.username === user) ? 'leftuser' : 'left';
-  $("#messages ul").append(`<li><span class=${classMessage}><p><b>${data.username}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
+  var classMessage = (data.username === user()) ? 'leftuser' : 'left';
+  $("#messages ul").append(`<li><span class=${classMessage}><p><b>${data.user_name}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
 }
 
 </script>
