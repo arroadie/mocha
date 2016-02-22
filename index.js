@@ -4,6 +4,7 @@ let fs = require('fs');
 let koa = require('koa');
 let router = require('koa-router')();
 let serve = require('koa-serve');
+var path = require('path');
 
 let server = require('socket.io')(3000);
 
@@ -40,7 +41,7 @@ app.use(function* (next) {
 });
 
 router.get('/', function(next) {
-  this.body = fs.readFileSync('index.html').toString();
+  this.body = fs.readFileSync(path.join(__dirname,'index.html')).toString();
 });
 app.use(router.routes());
 
