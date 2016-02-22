@@ -21,9 +21,12 @@ var users = {};
 server.on('connection', function(socket) {
   console.log(`Connected client: ${socket.id}`);
 
-  socket.on('message', function(data) {
-    console.log(`Message ${socket.id}: ${data}`);
-    server.emit('message', data);
+  socket.on('message', function(message) {
+    console.log(`Message ${socket.id}: ${JSON.stringify(message)}`);
+    server.emit('message', {
+      username: message.username,
+      data: message.data
+    });
   });
 });
 
