@@ -11,7 +11,7 @@
 
 <div id="stream">
 </div>
-
+<div id="message_box"><input type="text" id="message_content"> <button id="send_message">Send</button></div>
 <script>
 var socket = io('http://local.deadpool:3000');
 var user = '';
@@ -30,6 +30,17 @@ window.addEventListener("load", function() {
     ev.preventDefault();
     user = $('#user_name').val();
     console.log('user', user);
+  });
+
+  $('#send_message').on('click', function(data) {
+    data.preventDefault();
+    if(user.length == 0){
+      return false
+    } else {
+      if(socket.emit('message', {username: user, data: $('#message_content').val()})){
+        $("#message_content").val("");
+      }
+    }
   });
 });
 
