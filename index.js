@@ -30,7 +30,6 @@ server.on('connection', function(socket) {
   });
 });
 
-
 // Web app
 var app = koa();
 
