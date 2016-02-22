@@ -23,9 +23,15 @@ socket.on('connect', function (data) {
   console.log('connected successfull');
 });
 
-socket.on('message', function(message) {
-  console.log(message.username + ': ' + message.data);
-  printMessage(message);
+socket.on('message', function(data) {
+  console.log(data.username + ': ' + data.message);
+  printMessage(data);
+});
+
+socket.on('history', function(data) {
+  JSON.parse(data).forEach(function(item) {
+    printMessage(item);
+  });
 });
 
 window.addEventListener("load", function() {
@@ -61,8 +67,8 @@ window.addEventListener("load", function() {
   });
 });
 
-function printMessage(message) {
-  $("#stream").append(`<div class="message"><div class="username">${message.username}</div><div class="message">${message.data}</div></div>`);
+function printMessage(data) {
+  $("#stream").append(`<div class="message"><div class="username">${data.username}</div><div class="message">${data.message}</div></div>`);
 }
 
 </script>

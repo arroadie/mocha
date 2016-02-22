@@ -7,31 +7,24 @@ let serve = require('koa-serve');
 
 let server = require('socket.io')(3000);
 
-let thread = {
-  id: 'test',
-  parent_id: null,
-  type: null,
-  has_children: true,
-  user_id: 'francis',
-  user_name: 'Francis',
-  message: '',
-  timestamp: 1456154319
-};
+// Models
+let Thread = require('./models/thread');
 
-let users = {};
+let pool = [];
 
 server.on('connection', function(socket) {
   console.log(`Connected client: ${socket.id}`);
 
-  socket.on('message', function(message) {
-    console.log(`Message ${socket.id}: ${JSON.stringify(message)}`);
-    let response = {
-      timestamp: Date.now(),
-      username: message.username,
-      data: message.data
-    };
+  // TODO: Join
+  socket.on('message', function(data) {
+    console.log(`Message ${socket.id}: ${JSON.stringify(data)}`);
+    let response = new Thread(data, { parent_id: 'test' });
+    pool.push(response);
+    console.log('response', response);
     server.emit('message', response);
   });
+
+  socket.emit('history', JSON.stringify(pool));
 });
 
 // Web app
