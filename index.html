@@ -47,10 +47,6 @@ socket.on('history', function(data) {
 
 window.addEventListener("load", function() {
 
-  function user() {
-    return Cookies.get("username") ? Cookies.get("username") : false;
-  }
-
   refreshUserData();
 
   function refreshUserData() {
@@ -99,16 +95,20 @@ window.addEventListener("load", function() {
   });
 });
 
+function user() {
+  return Cookies.get("username") ? Cookies.get("username") : false;
+}
+
 function refreshUserData() {
   $("#user_data").html("<div>Welcome, " + user + "</div>");
 }
 
 function sendMessage() {
     var msg = $('#message_content').val();
-    if(!user || msg === ''){
+    if(!user() || msg === ''){
       return false
     } else {
-      if(socket.emit('message', {user_name: user, message: msg})){
+      if(socket.emit('message', {user_name: user(), message: msg})){
         $("#message_content").val("");
       }
     }
