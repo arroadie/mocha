@@ -110,7 +110,6 @@ function refreshUserData() {
 function sendMessage() {
     var msg = $('#message_content').val();
     var parentId = $('.header').attr('data-thread-id');
-    console.log('pid', parentId);
 
     if(!user() || msg === ''){
       return false
