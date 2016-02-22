@@ -1,11 +1,13 @@
-var fs = require('fs');
-var koa = require('koa');
-var router = require('koa-router')();
-var serve = require('koa-serve');
+'use strict';
 
-var server = require('socket.io')(3000);
+let fs = require('fs');
+let koa = require('koa');
+let router = require('koa-router')();
+let serve = require('koa-serve');
 
-var thread = {
+let server = require('socket.io')(3000);
+
+let thread = {
   id: 'test',
   parent_id: null,
   type: null,
@@ -16,22 +18,24 @@ var thread = {
   timestamp: 1456154319
 };
 
-var users = {};
+let users = {};
 
 server.on('connection', function(socket) {
   console.log(`Connected client: ${socket.id}`);
 
   socket.on('message', function(message) {
     console.log(`Message ${socket.id}: ${JSON.stringify(message)}`);
-    server.emit('message', {
+    let response = {
+      timestamp: Date.now(),
       username: message.username,
       data: message.data
-    });
+    };
+    server.emit('message', response);
   });
 });
 
 // Web app
-var app = koa();
+let app = koa();
 
 app.use(serve('public'));
 app.use(function* (next) {
