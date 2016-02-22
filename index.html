@@ -13,7 +13,7 @@
 </head>
 
 <body>
-  <div class="header">Test Room</div>
+  <div class="header" data-thread-id="test">Test Room</div>
   <div id="user_data">
     <input type="text" id="user_name" placeholder="Please write your username to continue"/>
   </div>
@@ -109,7 +109,8 @@ function refreshUserData() {
 
 function sendMessage() {
     var msg = $('#message_content').val();
-    var parentId = $('#chat-box .header').attr('data-thread-id');
+    var parentId = $('.header').attr('data-thread-id');
+    console.log('pid', parentId);
 
     if(!user() || msg === ''){
       return false
