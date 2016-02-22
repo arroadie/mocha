@@ -4,7 +4,7 @@
   "description": "Message oriented chat service",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -14,5 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "socket.io": "^1.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.0"
   }
 }
