@@ -2,11 +2,14 @@
 <head>
 <script src='http://code.jquery.com/jquery-2.2.0.min.js'></script>
 <script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
+<script src='/public/js/js.cookie.js'></script>
 </head>
 
 <body>
-<input type="text" id="user_name"/>
-<button id="update_user_name">Update name</button>
+<div id="user_data">
+  <input type="text" id="user_name"/>
+  <button id="update_user_name">Update name</button>
+</div>
 </body>
 
 <div id="stream">
@@ -26,18 +29,32 @@ socket.on('message', function(message) {
 });
 
 window.addEventListener("load", function() {
+
+  user = Cookies.get("username")
+
+  if(user) {
+    refreshUserData();
+  }
+
+  function refreshUserData() {
+    $("#user_data").html("<div>Welcome, " + user + "</div>");
+  }
+
   $('#update_user_name').on('click', function(ev) {
     ev.preventDefault();
     user = $('#user_name').val();
-    console.log('user', user);
+    document.cookie = `username=${user}`;
+    refreshUserData();
   });
 
   $('#send_message').on('click', function(data) {
     data.preventDefault();
-    if(user.length == 0){
+    var msg = $('#message_content').val();
+    console.log(msg.length);
+    if(!user || msg == ''){
       return false
     } else {
-      if(socket.emit('message', {username: user, data: $('#message_content').val()})){
+      if(socket.emit('message', {username: user, data: msg})){
         $("#message_content").val("");
       }
     }
