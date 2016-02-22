@@ -97,7 +97,8 @@ window.addEventListener("load", function() {
 });
 
 function printMessage(data) {
-  $("#messages ul").append(`<li><span class=${side}><p>${data.message}</p></span></li>`);
+  var date = new Date(data.timestamp * 1000)
+  $("#messages ul").append(`<li><span class=${side}><p><b>${data.username}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
 }
 </script>
 </html>
