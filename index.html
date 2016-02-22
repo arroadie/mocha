@@ -96,7 +96,7 @@ function sendMessage() {
 
 function printMessage(data) {
   var date = new Date(data.timestamp )
-  $("#messages ul").append(`<li><span class=${side}><p><b>${data.username}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
+  $("#messages ul").append(`<li><span class=${side}><p><b>${data.user_name}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
 }
 </script>
 </html>
