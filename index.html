@@ -31,10 +31,16 @@ socket.on('connect', function (data) {
   console.log('connected successfull');
 });
 
-socket.on('message', function(message) {
-  console.log(message.username + ': ' + message.data);
-  printMessage(message);
+socket.on('message', function(data) {
+  console.log(data.username + ': ' + data.message);
+  printMessage(data);
   side = (side == 'left') ? 'right' : 'left';
+});
+
+socket.on('history', function(data) {
+  JSON.parse(data).forEach(function(item) {
+    printMessage(item);
+  });
 });
 
 window.addEventListener("load", function() {
@@ -56,10 +62,29 @@ window.addEventListener("load", function() {
     refreshUserData();
   });
 
+  $('#user_name').keypress(function (e) {
+    var key = e.which;
+    if(key == 13) {
+      user = $('#user_name').val();
+      document.cookie = `username=${user}`;
+      refreshUserData();
+    }
+  });
+
+  $('#message_content').keypress(function (e) {
+    var key = e.which;
+    if(key == 13) {
+      sendMessage();
+    }
+  });
+
   $('#send_message').on('click', function(data) {
     data.preventDefault();
+    sendMessage();
+  });
+
+  function sendMessage() {
     var msg = $('#message_content').val();
-    console.log(msg.length);
     if(!user || msg == ''){
       return false
     } else {
@@ -67,12 +92,12 @@ window.addEventListener("load", function() {
         $("#message_content").val("");
       }
     }
-  });
+  }
+
 });
 
-function printMessage(message) {
-  $("#messages ul").append(`<li><span class=${side}><p>${message.data}</p></span></li>`);
+function printMessage(data) {
+  $("#messages ul").append(`<li><span class=${side}><p>${data.message}</p></span></li>`);
 }
-
 </script>
 </html>
