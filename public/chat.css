@@ -57,7 +57,6 @@ body {
 {
   display: inline-block;
   width: 100%;
-  background-color: white;
   padding: 5px;
   border-radius: 4px;
   position: relative;
@@ -65,6 +64,15 @@ body {
   border-style: solid;
   border-color: grey;
 }
+
+.messages ul li.left span{
+  background-color:#f6fcff;
+}
+
+.messages ul li.right span{
+  background-color:#fff;
+}
+
 
 .messages ul li span.left
 {
@@ -145,6 +153,42 @@ body {
 {
   float: right;
   background-color: #dbedfe;
+}
+
+
+.messages ul li p.message-header {
+  display:block;
+  width:100%;
+  clear:both;
+  border-bottom: solid 1px gray;
+  padding-bottom:12px;
+  margin-bottom:12px;
+  position:relative;
+}
+
+.messages ul li p.message {
+  display:block;
+  width:100%;
+  clear:both;
+  margin-top:12px;
+}
+
+.messages ul li b.timestamp {
+  float:right;
+  font-size:11px;
+  position:absolute;
+  bottom:0;
+  right:14px;
+  color:gray;
+}
+
+.messages ul li b.username {
+  float:left;
+  font-size:12px;
+  position:absolute;
+  bottom:0;
+  left:2px;
+  font-weight: bold;
 }
 
 .clear

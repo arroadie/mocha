@@ -97,7 +97,14 @@ window.addEventListener("load", function() {
     data.preventDefault();
     sendMessage();
   });
+
+  updateChatScroll();
 });
+
+function updateChatScroll(){
+    var element = document.getElementById("messages");
+    element.scrollTop = element.scrollHeight;
+}
 
 function user() {
   return Cookies.get("username") ? Cookies.get("username") : false;
@@ -129,7 +136,8 @@ function sendMessage() {
 function printMessage(data) {
   var date = new Date(data.timestamp );
   var classMessage = (data.username === user()) ? 'leftuser' : 'left';
-  $("#messages ul").append(`<li><span class=${classMessage}><p><b>${data.user_name}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
+  $("#messages ul").append(`<li class=${classMessage}><span><p class="message-header"><b class="username">${data.user_name}</b> <b class="timestamp">${date.toGMTString()}</b></p><p class="message">${data.message}</p></span></li>`);
+  updateChatScroll();
 }
 
 </script>
