@@ -17,13 +17,13 @@
 </body>
 
 <div id="chat-box">
-            <div class="header">
-                Test Room
-            </div>
-            <div id="messages" class="messages">
-            <ul></ul>
-          </div>
+  <div class="header" data-thread-id="test">Test Room</div>
+
+  <div id="messages" class="messages">
+    <ul></ul>
+  </div>
 </div>
+
 <div id="message_box"><input type="text" id="message_content"> <button id="send_message">Send</button></div>
 
 <script>
@@ -105,10 +105,18 @@ function refreshUserData() {
 
 function sendMessage() {
     var msg = $('#message_content').val();
+    var parentId = $('#chat-box .header').attr('data-thread-id');
+
     if(!user() || msg === ''){
       return false
     } else {
-      if(socket.emit('message', {user_name: user(), message: msg})){
+      var success = socket.emit('message', {
+        user_name: user,
+        message: msg,
+        parent_id: parentId
+      });
+
+      if(success){
         $("#message_content").val("");
       }
     }

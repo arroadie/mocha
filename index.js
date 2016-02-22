@@ -19,7 +19,7 @@ server.on('connection', function(socket) {
   // TODO: Join
   socket.on('message', function(data) {
     Log.srv(`[Message] ${data.user_name}: ${data.message}`);
-    let response = new Thread(data, { parent_id: 'test' });
+    let response = new Thread(data);
     pool.push(response);
     server.emit('message', response);
   });
