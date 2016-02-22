@@ -1,9 +1,15 @@
 body {
   font-family: 'Poppins', sans-serif;
 }
-.chat-box
-{
-  width: 300px;
+
+#chat-box {
+  display: block;
+  height: 800px;
+  width: 100%;
+}
+
+.messages-main-container {
+  height: 800px !important;
 }
 
 .header
@@ -50,7 +56,7 @@ body {
 .messages ul li span
 {
   display: inline-block;
-  max-width: 200px;
+  width: 100%;
   background-color: white;
   padding: 5px;
   border-radius: 4px;
