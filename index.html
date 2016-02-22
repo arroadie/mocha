@@ -25,7 +25,6 @@
 <script>
 var socket = io('http://local.deadpool:3000');
 var user = '';
-var side = 'left'
 
 socket.on('connect', function (data) {
   console.log('connected successfull');
@@ -97,8 +96,10 @@ window.addEventListener("load", function() {
 });
 
 function printMessage(data) {
-  var date = new Date(data.timestamp )
-  $("#messages ul").append(`<li><span class=${side}><p><b>${data.username}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
+  var date = new Date(data.timestamp );
+  var classMessage = (data.username === user) ? 'leftuser' : 'left';
+  $("#messages ul").append(`<li><span class=${classMessage}><p><b>${data.username}</b></p><p>${data.message}</p><p>${date.toGMTString()}</p></span></li>`);
 }
+
 </script>
 </html>
