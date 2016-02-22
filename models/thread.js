@@ -1,7 +1,9 @@
 'use strict';
 
 var Thread = function(data, opts) {
-  this.id = 'test';
+  opts = opts || {};
+
+  this.id = 'zzz' + Date.now() + 'xxx';
   this.timestamp = Date.now();
 
   this.user_id = data.user_id || null;
