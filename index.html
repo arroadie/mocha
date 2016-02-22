@@ -28,11 +28,11 @@
     </div>
     <div id="message_box"><p></p><input type="text" id="message_content"> <button id="send_message">Send</button></div>
   </div>
+
 </body>
 
 <script>
 var socket = io('http://local.deadpool:3000');
-var user = '';
 
 socket.on('connect', function (data) {
   console.log('connected successfull');
@@ -103,15 +103,23 @@ function user() {
 }
 
 function refreshUserData() {
-  $("#user_data").html("<div>Welcome, " + user + "</div>");
+  $("#user_data").html("<div>Welcome, " + user() + "</div>");
 }
 
 function sendMessage() {
     var msg = $('#message_content').val();
+    var parentId = $('#chat-box .header').attr('data-thread-id');
+
     if(!user() || msg === ''){
       return false
     } else {
-      if(socket.emit('message', {user_name: user(), message: msg})){
+      var success = socket.emit('message', {
+        user_name: user,
+        message: msg,
+        parent_id: parentId
+      });
+
+      if(success){
         $("#message_content").val("");
       }
     }
