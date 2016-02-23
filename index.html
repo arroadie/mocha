@@ -4,9 +4,13 @@
   <script src='http://code.jquery.com/jquery-2.2.0.min.js'></script>
   <script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
   <script src='/public/js/js.cookie.js'></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
   <!-- CSS -->
-  <link rel="stylesheet" type="text/css" href="public/chat.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link href='/public/chat.css' rel='stylesheet' type='text/css'>
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
   <!-- Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Poppins:300' rel='stylesheet' type='text/css'>
@@ -14,21 +18,28 @@
 
 <body>
   <div class="header" data-thread-id="test">Test Room</div>
-  <div id="user_data">
+  <!-- div id="user_data">
     <input type="text" id="user_name" placeholder="Please write your username to continue"/>
   </div>
   <div class="user_actions">
     <button id="update_user_name">Set Username</button>
-    <button id='logout'>Logout</button>
-  <div>
-
-  <div id="chat-box">
-    <div id="messages" class="messages messages-main-container">
-      <ul></ul>
-    </div>
-    <div id="message_box"><p></p><input type="text" id="message_content"> <button id="send_message">Send</button></div>
+    <button id='logout'>Logout</button -->
   </div>
 
+  <div class="container-fluid">
+    <div id="chat-box">
+      <div id="messages" class="messages messages-main-container col-xs-12">
+        <ul></ul>
+      </div>
+
+    </div> <!-- container -->
+
+    <div class="row commands">
+      <div class="col-xs-12">
+        <div id="message_box"><p></p><input type="text" id="message_content"> <button class="btn btn-primary" id="send_message">Send</button></div>
+      </div>
+    </div>
+  </div>
 </body>
 
 <script src='/public/js/app.js'></script>

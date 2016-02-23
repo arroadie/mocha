@@ -64,6 +64,11 @@ window.addEventListener("load", function() {
     sendMessage();
   });
 
+  $(window).resize(function() {
+    resizeWindow();
+  });
+
+  resizeWindow();
   updateChatScroll();
 });
 
@@ -104,4 +109,9 @@ function printMessage(data) {
   var classMessage = (data.username === user()) ? 'leftuser' : 'left';
   $("#messages ul").append(`<li class=${classMessage}><span><p class="message-header"><b class="username">${data.user_name}</b> <b class="timestamp">${date.toGMTString()}</b></p><p class="message">${data.message}</p></span></li>`);
   updateChatScroll();
+}
+
+function resizeWindow() {
+  var height = $(window).innerHeight() - 130;
+  $('#chat-box').css('height', height + 'px');
 }
