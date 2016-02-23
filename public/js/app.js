@@ -14,24 +14,7 @@ socket.on('history', function(data) {
   });
 });
 
-window.addEventListener("load", function() {
-
-  refreshUserData();
-
-  function refreshUserData() {
-    if(user()) {
-      $("#message_box p").html("@" + user());
-      $("#user_name").hide();
-      $('#update_user_name').hide();
-      $('#logout').show();
-    } else {
-      $("#message_box p").html("");
-      $("#user_welcome").remove();
-      $("#user_name").show();
-      $('#logout').hide();
-      $('#update_user_name').show();
-    }
-  }
+//window.addEventListener("load", function() {
 
   $('#update_user_name').on('click', function(ev) {
     ev.preventDefault();
@@ -68,9 +51,10 @@ window.addEventListener("load", function() {
     resizeWindow();
   });
 
+  refreshUserData();
   resizeWindow();
   updateChatScroll();
-});
+//});
 
 function updateChatScroll(){
     var element = document.getElementById("test");
@@ -81,8 +65,25 @@ function user() {
   return Cookies.get("username") ? Cookies.get("username") : false;
 }
 
+/*
 function refreshUserData() {
   $("#user_data").html("<div>Welcome, " + user() + "</div>");
+}
+*/
+
+function refreshUserData() {
+  if(user()) {
+    $("#message_box p").html("@" + user());
+    $("#user_name").hide();
+    $('#update_user_name').hide();
+    $('#logout').show();
+  } else {
+    $("#message_box p").html("");
+    $("#user_welcome").remove();
+    $("#user_name").show();
+    $('#logout').hide();
+    $('#update_user_name').show();
+  }
 }
 
 function sendMessage() {

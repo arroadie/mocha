@@ -4,7 +4,8 @@ let fs = require('fs');
 let koa = require('koa');
 let router = require('koa-router')();
 let serve = require('koa-serve');
-var path = require('path');
+let path = require('path');
+let hbs = require('koa-hbs');
 
 let server = require('socket.io')(3000);
 
@@ -13,6 +14,7 @@ let Log = require('./models/log');
 let Thread = require('./models/thread');
 
 let pool = [];
+let pinned = [];
 
 server.on('connection', function(socket) {
   Log.srv(`Connected client: ${socket.id}`);
@@ -32,6 +34,11 @@ server.on('connection', function(socket) {
 let app = koa();
 
 app.use(serve('public'));
+
+app.use(hbs.middleware({
+  viewPath: path.join(__dirname, 'views')
+}));
+
 app.use(function* (next) {
   const start = new Date();
   yield next;
@@ -40,8 +47,13 @@ app.use(function* (next) {
   Log.web(`${this.method} ${this.url} processed in ${String(end-start)} ms`);
 });
 
-router.get('/', function(next) {
-  this.body = fs.readFileSync(path.join(__dirname,'index.html')).toString();
+router.get('/', function* (next) {
+  yield this.render('index', {
+    templates: {
+      messages: fs.readFileSync(path.join(__dirname,'views', 'message.hbs')).toString()
+    }
+  });
+  //this.body = fs.readFileSync(path.join(__dirname,'index.html')).toString();
 });
 app.use(router.routes());
 

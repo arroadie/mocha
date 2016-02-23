@@ -18,7 +18,8 @@
     "koa-router": "^5.4.0",
     "koa-serve": "^0.1.7",
     "koa-session": "^3.3.1",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "koa-hbs": "^0.8.0"
   },
   "devDependencies": {
     "nodemon": "^1.9.0"
