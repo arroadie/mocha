@@ -107,7 +107,7 @@ function sendMessage() {
 function printMessage(data) {
   var date = new Date(data.timestamp );
   var classMessage = (data.username === user()) ? 'leftuser' : 'left';
-  $("#messages ul").append(`<li class=${classMessage}><span><p class="message-header"><b class="username">${data.user_name}</b> <b class="timestamp">${date.toGMTString()}</b></p><p class="message">${escapeHtml(data.message)}</p></span></li>`);
+  $("#messages ul").append(`<li class=${classMessage}><span id=${data.id}><p class="message-header"><b class="username">${data.user_name}</b> <b class="timestamp">${date.toGMTString()}</b></p><p class="message">${escapeHtml(data.message)}</p></span></li>`);
   updateChatScroll();
 }
 
