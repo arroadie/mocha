@@ -5,6 +5,7 @@ var Thread = function(data, opts) {
 
   this.id = 'zzz' + Date.now() + 'xxx';
   this.timestamp = Date.now();
+  this.datetime = new Date(this.timestamp).toISOString();
 
   this.user_id = data.user_id || null;
   this.user_name = data.user_name || null;

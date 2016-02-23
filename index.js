@@ -50,10 +50,9 @@ app.use(function* (next) {
 router.get('/', function* (next) {
   yield this.render('index', {
     templates: {
-      messages: fs.readFileSync(path.join(__dirname,'views', 'message.hbs')).toString()
+      message: fs.readFileSync(path.join(__dirname,'views', 'message.hbs')).toString()
     }
   });
-  //this.body = fs.readFileSync(path.join(__dirname,'index.html')).toString();
 });
 app.use(router.routes());
 

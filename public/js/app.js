@@ -1,4 +1,5 @@
 var socket = io('http://' + window.location.hostname + ':3000');
+var messageTemplate = null;
 
 socket.on('connect', function (data) {
   console.log('connected successfull');
@@ -14,7 +15,9 @@ socket.on('history', function(data) {
   });
 });
 
-//window.addEventListener("load", function() {
+window.addEventListener("load", function() {
+  messageTemplate = Handlebars.compile($("#message_template").html());
+});
 
   $('#update_user_name').on('click', function(ev) {
     ev.preventDefault();
@@ -108,7 +111,7 @@ function sendMessage() {
 function printMessage(data) {
   var date = new Date(data.timestamp );
   var classMessage = (data.username === user()) ? 'leftuser' : 'left';
-  $("#test ul").append(`<li class=${classMessage}><span><p class="message-header"><b class="username">${data.user_name}</b> <b class="timestamp">${date.toGMTString()} <a href="#" data-message-id=${data.id}> reply</a></b></p><p class="message">${escapeHtml(data.message)}</p></span></li>`);
+  $("#test ul").append(messageTemplate(data));
   updateChatScroll();
 }
 
