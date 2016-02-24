@@ -28,10 +28,16 @@ socket.on('empty-thread', function(data) {
   renderChat(data.id, data.history);
 });
 
+socket.on('inchat-notification', function(data) {
+  console.log('epa', data);
+  printInChatNotification(data);
+});
+
 window.addEventListener("load", function() {
   templates['message'] = Handlebars.compile($("#message_template").html());
   templates['thread'] = Handlebars.compile($("#thread_template").html());
   templates['thread_list_item'] = Handlebars.compile($("#thread_list_item_template").html());
+  templates['inchat_notification'] = Handlebars.compile($("#inchat_notification_template").html());
 
   $(window).resize(function() {
     resizeWindow();
@@ -137,6 +143,12 @@ function printMessage(data) {
   updateChatScroll(data.parent_id);
   $('a.reply').off('click');
   $('a.reply').on('click', replyMessage);
+}
+
+function printInChatNotification(data) {
+  var chat = $('#chat section.content[data-thread-id="' + data.parent_id + '"] section.body .messages ul');
+  chat.append(templates.inchat_notification(data));
+  updateChatScroll(data.parent_id);
 }
 
 function resizeWindow() {

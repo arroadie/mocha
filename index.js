@@ -2,6 +2,7 @@
 
 let fs = require('fs');
 let koa = require('koa');
+let http = require('http');
 let router = require('koa-router')();
 let serve = require('koa-serve');
 let path = require('path');
@@ -14,7 +15,10 @@ let Log = require('./models/log');
 let Thread = require('./models/thread');
 
 let pinned = [];
-let pool = {'test-room':[]};
+let pool = {'1':[]};
+
+const hostname = 'geekon32.snc1';
+const port = 8080;
 
 server.on('connection', function(socket) {
   Log.srv(`Connected client: ${socket.id}`);
@@ -24,12 +28,41 @@ server.on('connection', function(socket) {
     Log.srv(`[Message] ${data.user_name}: ${data.message}`);
     let response = new Thread(data);
 
-    if (!pool.hasOwnProperty(data.parent_id)) {
-      // TODO: Subscribe
-      pool[data.parent_id] = [];
+    var options = {
+      hostname: hostname,
+      port: port,
+      method: 'PUT',
+      path: '/threads/' + data.parent_id,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }
-    pool[data.parent_id].push(response);
-    server.emit('message', response);
+    console.log('resp', response);
+
+    var req = http.request(options);
+    req.on('response', function(response) {
+      if (response.statusCode === 200) {
+        server.emit('message', response);
+      } else {
+        // TODO: Send error message
+        socket.emit('inchat-notification', {
+          parent_id: data.parent_id,
+          class: 'error',
+          message: 'Error sending message'
+        });
+      }
+      console.log('resp', response.statusCode);
+
+    });
+    req.write(JSON.stringify(response));
+    req.end();
+
+    //if (!pool.hasOwnProperty(data.parent_id)) {
+    //  // TODO: Subscribe
+    //  pool[data.parent_id] = [];
+    //}
+    //pool[data.parent_id].push(response);
+    //server.emit('message', response);
   });
 
   socket.on('history', function(data) {
@@ -74,6 +107,7 @@ router.get('/', function* (next) {
   yield this.render('index', {
     templates: {
       message: fs.readFileSync(path.join(__dirname,'views', 'message.hbs')).toString(),
+      inchat_notification: fs.readFileSync(path.join(__dirname,'views', 'inchat_notification.hbs')).toString(),
       thread: fs.readFileSync(path.join(__dirname,'views', 'thread.hbs')).toString(),
       thread_list_item: fs.readFileSync(path.join(__dirname,'views', 'thread_list_item.hbs')).toString(),
     }

@@ -7,7 +7,7 @@ var Thread = function(data, opts) {
   this.timestamp = Date.now();
   this.datetime = new Date(this.timestamp).toISOString();
 
-  this.user_id = data.user_id || null;
+  this.user_id = data.user_id || 1;
   this.user_name = data.user_name || null;
   this.message = data.message || '';
   this.parent_id = data.parent_id || null;

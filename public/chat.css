@@ -82,6 +82,11 @@ html, body {
   font-weight: bold;
 }
 
+.messages ul li.error {
+  color: #bbb;
+  font-style: italic;
+}
+
 .clear {
   clear: both;
 }
