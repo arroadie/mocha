@@ -20,6 +20,7 @@ socket.on('history', function(data) {
 
 socket.on('subscribed-thread', function(data) {
   console.log('subscribed', data);
+  activateThread(data.id);
 });
 
 socket.on('empty-thread', function(data) {
