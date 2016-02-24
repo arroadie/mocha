@@ -1,6 +1,7 @@
 var socket = io('http://' + window.location.hostname + ':3000');
 var templates = {};
 var subscriptions = ['test'];
+var capturingReplyClick = false;
 
 socket.on('connect', function (data) {
   console.log('connected successfull');
@@ -136,6 +137,7 @@ function printMessage(data) {
   var chat = $('#chat section.content[data-thread-id="' + data.parent_id + '"] section.body .messages ul');
   chat.append(templates.message(data));
   updateChatScroll(data.parent_id);
+  $('a.reply').off('click');
   $('a.reply').on('click', replyMessage);
 }
 
@@ -147,6 +149,9 @@ function resizeWindow() {
 }
 
 function renderChat(id, history) {
+  var listItem = $('#threads-list ul li[data-thread-id="' + id +'"]');
+  if (listItem.length > 0) return true;
+
   var obj = {thread_id: id, name: id};
   $('#threads-list ul').append(templates.thread_list_item(obj));
   $('#chat').append(templates.thread(obj));

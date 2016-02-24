@@ -37,12 +37,14 @@ server.on('connection', function(socket) {
   });
 
   socket.on('subscribe', function(data) {
-    console.log('subs', data, pool);
+    Log.srv(`Trying to subscribe to ${data}`);
     if (pool.hasOwnProperty(data)) {
+      Log.srv(` -> Already subscribed to thread`);
       socket.emit('subscribed-thread', {
         id: data,
       });
     } else {
+      Log.srv(` -> Thread empty`);
       socket.emit('empty-thread', {
         id: data,
         history: []

@@ -3,7 +3,7 @@
 var Thread = function(data, opts) {
   opts = opts || {};
 
-  this.id = 'zzz' + Date.now() + 'xxx';
+  this.id = 'zzz' + Date.now() + 'xxx' + getRandomInt(100, 999);
   this.timestamp = Date.now();
   this.datetime = new Date(this.timestamp).toISOString();
 
@@ -17,5 +17,9 @@ var Thread = function(data, opts) {
 };
 
 Thread.prototype.constructor = Thread;
+
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 module.exports = Thread;
