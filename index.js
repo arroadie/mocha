@@ -37,7 +37,7 @@ server.on('connection', function(socket) {
         'Content-Type': 'application/json'
       }
     }
-    console.log('resp', response);
+    console.log('resp', JSON.stringify(response));
 
     var req = http.request(options);
     req.on('response', function(response) {
