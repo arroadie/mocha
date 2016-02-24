@@ -25,7 +25,7 @@ server.on('connection', function(socket) {
 
   // TODO: Join
   socket.on('message', function(data) {
-    Log.srv(`[Message] ${data.user_name}: ${data.message}`);
+    Log.srv(`[Message::${data.parent_id}] – ${data.user_name}: ${data.message}`);
     let response = new Thread(data);
 
     var options = {
@@ -39,19 +39,26 @@ server.on('connection', function(socket) {
     }
     console.log('resp', JSON.stringify(response));
 
+    Log.srv("Sending PUT to /threads");
     var req = http.request(options);
     req.on('response', function(response) {
-      if (response.statusCode === 200) {
-        server.emit('message', response);
-      } else {
-        // TODO: Send error message
-        socket.emit('inchat-notification', {
-          parent_id: data.parent_id,
-          class: 'error',
-          message: 'Error sending message'
-        });
-      }
-      console.log('resp', response.statusCode);
+
+      response.on('data', function(chunk) {
+        if (response.statusCode === 200) {
+          Log.srv("PUT successful");
+          server.emit('message', response);
+        } else {
+          var msg = chunk.toString().replace("\n", " ");
+          Log.srv("Error with PUT:");
+          Log.srv(` -> statusCode: ${response.statusCode}`);
+          Log.srv(` -> message: ${msg}`);
+          socket.emit('inchat-notification', {
+            parent_id: data.parent_id,
+            class: 'error',
+            message: 'Error sending message: ' + msg
+          });
+        }
+      });
 
     });
     req.write(JSON.stringify(response));
