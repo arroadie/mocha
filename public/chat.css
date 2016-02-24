@@ -3,16 +3,20 @@ html, body {
   height: 100%;
 }
 
+#threads_list {
+  background-color: rgb(237, 239, 244);
+  border-right: solid 1px #ccc;
+  padding: 0;
+  overflow: scroll;
+}
+
 #chat-box {
   width: 100%;
   overflow: scroll;
 }
 
-.header {
-  font-size: 22px;
-  clear: both;
-  width: 100%;
-  height: 50px;
+.chat-header {
+  height: 70px;
   border-bottom: solid 1px #ccc;
   overflow: hidden;
   background-color: rgb(237, 239, 244);
