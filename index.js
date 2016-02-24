@@ -13,9 +13,8 @@ let server = require('socket.io')(3000);
 let Log = require('./models/log');
 let Thread = require('./models/thread');
 
-let pool = [];
 let pinned = [];
-let subscriptions = ['test'];
+let pool = {'test-room':[]};
 
 server.on('connection', function(socket) {
   Log.srv(`Connected client: ${socket.id}`);
@@ -24,14 +23,13 @@ server.on('connection', function(socket) {
   socket.on('message', function(data) {
     Log.srv(`[Message] ${data.user_name}: ${data.message}`);
     let response = new Thread(data);
-    pool.push(response);
+    pool[data.parent_id].push(response);
     server.emit('message', response);
   });
 
-  socket.on('subscriptions', function(data) {
-    socket.emit('subscriptions', JSON.stringify(subscriptions));
+  socket.on('history', function(data) {
+    socket.emit('history', JSON.stringify(pool));
   });
-  //socket.emit('history', JSON.stringify(pool));
 });
 
 // Web app

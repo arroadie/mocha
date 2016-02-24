@@ -11,14 +11,9 @@ socket.on('message', function(data) {
 });
 
 socket.on('history', function(data) {
-  JSON.parse(data).forEach(function(item) {
-    printMessage(item);
-  });
-});
-
-socket.on('subscriptions', function(data) {
-  JSON.parse(data).forEach(function(item) {
-    renderChat(item);
+  data = JSON.parse(data);
+  Object.keys(data).forEach(function(key) {
+    renderChat(key, data[key]);
   });
 });
 
@@ -27,7 +22,7 @@ window.addEventListener("load", function() {
   templates['thread'] = Handlebars.compile($("#thread_template").html());
   templates['thread_list_item'] = Handlebars.compile($("#thread_list_item_template").html());
 
-  socket.emit('subscriptions');
+  socket.emit('history');
 });
 
   $('#update_user_name').on('click', function(ev) {
@@ -72,9 +67,9 @@ function replyMessage(ev) {
   return false;
 }
 
-function updateChatScroll(){
-    var element = document.getElementById("test");
-    element.scrollTop = element.scrollHeight;
+function updateChatScroll(parent_id){
+  var chat = $('#chat section.content[data-thread-id="' + parent_id + '"] section.body .messages ul');
+  chat.scrollTop = chat.scrollHeight;
 }
 
 function user() {
@@ -120,10 +115,10 @@ function sendMessage() {
 }
 
 function printMessage(data) {
-  var date = new Date(data.timestamp );
-  var classMessage = (data.username === user()) ? 'leftuser' : 'left';
-  $("#test ul").append(templates.message(data));
-  updateChatScroll();
+  var date = new Date(data.timestamp);
+  var chat = $('#chat section.content[data-thread-id="' + data.parent_id + '"] section.body .messages ul');
+  chat.append(templates.message(data));
+  updateChatScroll(data.parent_id);
   $('a.reply').on('click', replyMessage);
 }
 
@@ -134,10 +129,14 @@ function resizeWindow() {
   $('#threads-list').css('height', innerHeight + 'px');
 }
 
-function renderChat(id) {
+function renderChat(id, history) {
   var obj = {thread_id: id, name: id};
   $('#threads-list ul').append(templates.thread_list_item(obj));
   $('#chat').append(templates.thread(obj));
+  history.forEach(function(msg) {
+    printMessage(msg);
+  });
+  updateChatScroll(id);
   resizeWindow();
   updateEvents();
 }
