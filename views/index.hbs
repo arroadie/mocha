@@ -1,16 +1,15 @@
 <html>
 <head>
   <!-- Javascripts -->
-  <script src='http://code.jquery.com/jquery-2.2.0.min.js'></script>
+  <script src='/public/js/jquery-2.2.1.min.js'></script>
   <script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
   <script src='/public/js/js.cookie.js'></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="/public/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+
   <!-- CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link href="/public/css/bootstrap.min.css" rel="stylesheet">
   <link href='/public/chat.css' rel='stylesheet' type='text/css'>
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
   <!-- Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Poppins:300' rel='stylesheet' type='text/css'>
@@ -20,6 +19,9 @@
   <div class="container-fluid">
     <div class="row">
       <div id="threads_list" class="col-sm-3 hidden-xs">
+        <ul class="nav nav-pills nav-stacked">
+          <li>Test</li>
+        </ul>
       </div>
 
       <div class="chatbox col-sm-9 col-xs-12">
@@ -43,7 +45,11 @@
           </div>
         </div>
 
-        <div class="chat"></div>
+        <div class="chat">
+          <div id="test" class="messages messages-main-container col-xs-12">
+            <ul></ul>
+          </div>
+        </div>
 
         <div class="row commands">
           <div class="col-sm-9 col-xs-12">
@@ -54,16 +60,7 @@
       </div>
     </div>
   </div>
-  <!-- div class="header" data-thread-id="test">Test Room</div>
-    <div id="user_data">
-      <input type="text" id="user_name" placeholder="Please write your username to continue"/>
-    </div>
-    <div class="user_actions">
-      <button id="update_user_name" class="btn btn-primary">Set Username</button>
-      <button id='logout' class="btn btn-primary">Logout</button>
-    </div>
-  </div>
-
+  <!-- 
   <div class="container-fluid">
     <ul class="nav nav-tabs" id="rooms">
       <li class="active"><a data-toggle="tab" href="#general">General</a></li>
