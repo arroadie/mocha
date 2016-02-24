@@ -73,7 +73,7 @@ window.addEventListener("load", function() {
 });
 
 function updateChatScroll(){
-    var element = document.getElementById("messages");
+    var element = document.getElementById("test");
     element.scrollTop = element.scrollHeight;
 }
 
@@ -107,7 +107,7 @@ function sendMessage() {
 function printMessage(data) {
   var date = new Date(data.timestamp );
   var classMessage = (data.username === user()) ? 'leftuser' : 'left';
-  $("#messages ul").append(`<li class=${classMessage}><span data-message-id=${data.id}><p class="message-header"><b class="username">${data.user_name}</b> <b class="timestamp">${date.toGMTString()}</b></p><p class="message">${escapeHtml(data.message)}</p></span></li>`);
+  $("#test ul").append(`<li class=${classMessage}><span><p class="message-header"><b class="username">${data.user_name}</b> <b class="timestamp">${date.toGMTString()} <a href="#" data-message-id=${data.id}> reply</a></b></p><p class="message">${escapeHtml(data.message)}</p></span></li>`);
   updateChatScroll();
 }
 
