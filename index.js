@@ -15,6 +15,7 @@ let Thread = require('./models/thread');
 
 let pool = [];
 let pinned = [];
+let subscriptions = ['test'];
 
 server.on('connection', function(socket) {
   Log.srv(`Connected client: ${socket.id}`);
@@ -27,7 +28,10 @@ server.on('connection', function(socket) {
     server.emit('message', response);
   });
 
-  socket.emit('history', JSON.stringify(pool));
+  socket.on('subscriptions', function(data) {
+    socket.emit('subscriptions', JSON.stringify(subscriptions));
+  });
+  //socket.emit('history', JSON.stringify(pool));
 });
 
 // Web app
@@ -50,7 +54,9 @@ app.use(function* (next) {
 router.get('/', function* (next) {
   yield this.render('index', {
     templates: {
-      message: fs.readFileSync(path.join(__dirname,'views', 'message.hbs')).toString()
+      message: fs.readFileSync(path.join(__dirname,'views', 'message.hbs')).toString(),
+      thread: fs.readFileSync(path.join(__dirname,'views', 'thread.hbs')).toString(),
+      thread_list_item: fs.readFileSync(path.join(__dirname,'views', 'thread_list_item.hbs')).toString(),
     }
   });
 });

@@ -20,47 +20,10 @@
     <div class="row">
       <div id="threads-list" class="col-sm-3 hidden-xs">
         <h4>Threads</h4>
-        <ul class="nav nav-pills nav-stacked">
-          <li class="active"><a href="#">Test Room</a></li>
-        </ul>
+        <ul class="nav nav-pills nav-stacked"></ul>
       </div>
 
-      <div id="chat" class="col-sm-9 col-xs-12">
-
-        <section class="content current" data-thread-id="test">
-          <section class="row header">
-            <div class="col-xs-8">
-              <h1>Test Room</h1>
-            </div>
-
-            <div class="col-xs-2">
-              <div id="user_data">
-                <input type="text" id="user_name" placeholder="Please write your username to continue"/>
-              </div>
-            </div>
-
-            <div class="col-xs-2">
-              <div class="user_actions">
-                <button id="update_user_name" class="btn btn-primary">Set Username</button>
-                <button id='logout' class="btn btn-primary">Logout</button>
-              </div>
-            </div>
-          </section>
-
-          <section class="body">
-            <div id="test" class="messages messages-main-container col-xs-12">
-              <ul></ul>
-            </div>
-          </section>
-
-          <section class="row footer">
-            <div class="col-xs-12">
-              <input type="text">
-            </div>
-          </section>
-        </section>
-
-      </div>
+      <div id="chat" class="col-sm-9 col-xs-12"></div>
     </div>
   </div>
 </body>
@@ -68,5 +31,11 @@
 <script src='/public/js/app.js'></script>
 <script type="text/x-handlebars-template" id="message_template">
 {{{ templates.message }}}
+</script>
+<script type="text/x-handlebars-template" id="thread_template">
+{{{ templates.thread }}}
+</script>
+<script type="text/x-handlebars-template" id="thread_list_item_template">
+{{{ templates.thread_list_item }}}
 </script>
 </html>

@@ -1,5 +1,6 @@
 var socket = io('http://' + window.location.hostname + ':3000');
-var messageTemplate = null;
+var templates = {};
+var subscriptions = ['test'];
 
 socket.on('connect', function (data) {
   console.log('connected successfull');
@@ -15,8 +16,18 @@ socket.on('history', function(data) {
   });
 });
 
+socket.on('subscriptions', function(data) {
+  JSON.parse(data).forEach(function(item) {
+    renderChat(item);
+  });
+});
+
 window.addEventListener("load", function() {
-  messageTemplate = Handlebars.compile($("#message_template").html());
+  templates['message'] = Handlebars.compile($("#message_template").html());
+  templates['thread'] = Handlebars.compile($("#thread_template").html());
+  templates['thread_list_item'] = Handlebars.compile($("#thread_list_item_template").html());
+
+  socket.emit('subscriptions');
 });
 
   $('#update_user_name').on('click', function(ev) {
@@ -38,23 +49,21 @@ window.addEventListener("load", function() {
     refreshUserData();
   });
 
-  $('#chat section.content section.footer input').keypress(function (e) {
-    var key = e.which;
-    if(key === 13) {
-      sendMessage();
-    }
-  });
-
   $(window).resize(function() {
     resizeWindow();
   });
 
-  $('a.reply').on('click', replyMessage);
-
   refreshUserData();
-  resizeWindow();
-  updateChatScroll();
+  updateEvents();
+  //updateChatScroll();
 //});
+
+function updateEvents() {
+  $('#chat section.content section.footer input').keypress(function (e) {
+    var key = e.which;
+    if(key === 13) sendMessage();
+  });
+};
 
 function replyMessage(ev) {
   ev.preventDefault();
@@ -113,7 +122,7 @@ function sendMessage() {
 function printMessage(data) {
   var date = new Date(data.timestamp );
   var classMessage = (data.username === user()) ? 'leftuser' : 'left';
-  $("#test ul").append(messageTemplate(data));
+  $("#test ul").append(templates.message(data));
   updateChatScroll();
   $('a.reply').on('click', replyMessage);
 }
@@ -125,12 +134,10 @@ function resizeWindow() {
   $('#threads-list').css('height', innerHeight + 'px');
 }
 
-
-function escapeHtml(unsafe) {
-    return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
- }
+function renderChat(id) {
+  var obj = {thread_id: id, name: id};
+  $('#threads-list ul').append(templates.thread_list_item(obj));
+  $('#chat').append(templates.thread(obj));
+  resizeWindow();
+  updateEvents();
+}
