@@ -3,23 +3,29 @@ html, body {
   height: 100%;
 }
 
-#threads_list {
+#threads-list {
   background-color: rgb(237, 239, 244);
   border-right: solid 1px #ccc;
   padding: 0;
   overflow: scroll;
 }
 
-#chat-box {
-  width: 100%;
-  overflow: scroll;
-}
-
-.chat-header {
+#chat section.header {
   height: 70px;
   border-bottom: solid 1px #ccc;
   overflow: hidden;
   background-color: rgb(237, 239, 244);
+}
+
+#chat section.footer {
+  background-color: rgb(237, 239, 244);
+  border: 1px solid #ccc;
+  bottom: 0;
+  height: 55px;
+}
+
+.nav-pills > li > a {
+  border-radius: 0;
 }
 
 .messages {
@@ -111,12 +117,6 @@ html, body {
 }
 
 /* Footer */
-.commands {
-  background-color: rgb(237, 239, 244);
-  border: 1px solid #ccc;
-  bottom: 0;
-  height: 55px;
-}
 
 #message_box {
   font-size:12px;

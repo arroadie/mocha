@@ -128,8 +128,8 @@ function printMessage(data) {
 function resizeWindow() {
   var innerHeight = $(window).innerHeight();
   var height = innerHeight - 125;
-  $('.chat').css('height', height + 'px');
-  $('#threads_list').css('height', innerHeight + 'px');
+  $('#chat section.body').css('height', height + 'px');
+  $('#threads-list').css('height', innerHeight + 'px');
 }
 
 
