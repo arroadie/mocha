@@ -10,18 +10,25 @@ html, body {
   overflow: scroll;
 }
 
-#chat section.header {
+#chat section.content section.header {
   height: 70px;
   border-bottom: solid 1px #ccc;
   overflow: hidden;
   background-color: rgb(237, 239, 244);
 }
 
-#chat section.footer {
+#chat section.content section.footer {
   background-color: rgb(237, 239, 244);
   border: 1px solid #ccc;
   bottom: 0;
   height: 55px;
+}
+
+#chat section.content section.footer input {
+  margin: 10px 0;
+  padding: 5px;
+  width: 100%;
+  color: gray;
 }
 
 .nav-pills > li > a {
@@ -120,11 +127,4 @@ html, body {
 
 #message_box {
   font-size:12px;
-}
-
-#message_box input#message_content {
-  margin: 10px 0;
-  padding: 5px;
-  width: 100%;
-  color: gray;
 }

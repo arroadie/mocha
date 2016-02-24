@@ -38,16 +38,11 @@ window.addEventListener("load", function() {
     refreshUserData();
   });
 
-  $('#message_content').keypress(function (e) {
+  $('#chat section.content section.footer input').keypress(function (e) {
     var key = e.which;
     if(key === 13) {
       sendMessage();
     }
-  });
-
-  $('#send_message').on('click', function(data) {
-    data.preventDefault();
-    sendMessage();
   });
 
   $(window).resize(function() {
@@ -99,23 +94,21 @@ function refreshUserData() {
 }
 
 function sendMessage() {
-    var msg = $('#message_content').val();
-    var parentId = $('.header').attr('data-thread-id');
+  var msg = $('#chat section.content.current section.footer input').val();
+  var parentId = $('#chat section.content.current').attr('data-thread-id');
 
-    if(!user() || msg === ''){
-      return false
-    } else {
-      var success = socket.emit('message', {
-        user_name: user(),
-        message: msg,
-        parent_id: parentId
-      });
+  if (!user() || msg === '') return false;
 
-      if(success){
-        $("#message_content").val("");
-      }
-    }
+  var success = socket.emit('message', {
+    user_name: user(),
+    message: msg,
+    parent_id: parentId
+  });
+
+  if (success){
+    $('#chat section.content.current section.footer input').val("")
   }
+}
 
 function printMessage(data) {
   var date = new Date(data.timestamp );
@@ -128,7 +121,7 @@ function printMessage(data) {
 function resizeWindow() {
   var innerHeight = $(window).innerHeight();
   var height = innerHeight - 125;
-  $('#chat section.body').css('height', height + 'px');
+  $('#chat section.content section.body').css('height', height + 'px');
   $('#threads-list').css('height', innerHeight + 'px');
 }
 

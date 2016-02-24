@@ -27,35 +27,37 @@
 
       <div id="chat" class="col-sm-9 col-xs-12">
 
-        <section class="row header" data-thread-id="test">
-          <div class="col-xs-8">
-            <h1>Test Room</h1>
-          </div>
-
-          <div class="col-xs-2">
-            <div id="user_data">
-              <input type="text" id="user_name" placeholder="Please write your username to continue"/>
+        <section class="content current" data-thread-id="test">
+          <section class="row header">
+            <div class="col-xs-8">
+              <h1>Test Room</h1>
             </div>
-          </div>
 
-          <div class="col-xs-2">
-            <div class="user_actions">
-              <button id="update_user_name" class="btn btn-primary">Set Username</button>
-              <button id='logout' class="btn btn-primary">Logout</button>
+            <div class="col-xs-2">
+              <div id="user_data">
+                <input type="text" id="user_name" placeholder="Please write your username to continue"/>
+              </div>
             </div>
-          </div>
-        </section>
 
-        <section class="body">
-          <div id="test" class="messages messages-main-container col-xs-12">
-            <ul></ul>
-          </div>
-        </section>
+            <div class="col-xs-2">
+              <div class="user_actions">
+                <button id="update_user_name" class="btn btn-primary">Set Username</button>
+                <button id='logout' class="btn btn-primary">Logout</button>
+              </div>
+            </div>
+          </section>
 
-        <section class="row footer">
-          <div class="col-xs-12">
-            <div id="message_box"><input type="text" id="message_content"></div>
-          </div>
+          <section class="body">
+            <div id="test" class="messages messages-main-container col-xs-12">
+              <ul></ul>
+            </div>
+          </section>
+
+          <section class="row footer">
+            <div class="col-xs-12">
+              <input type="text">
+            </div>
+          </section>
         </section>
 
       </div>
