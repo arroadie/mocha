@@ -10,6 +10,14 @@ html, body {
   overflow: scroll;
 }
 
+#chat section.content {
+  display: none;
+}
+
+#chat section.content.current {
+  display: block;
+}
+
 #chat section.content section.header {
   height: 70px;
   border-bottom: solid 1px #ccc;

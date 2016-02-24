@@ -1,0 +1,32 @@
+<section class="content current" data-thread-id="{{ thread_id }}">
+  <section class="row header">
+    <div class="col-xs-8">
+      <h1>{{ name }}</h1>
+    </div>
+
+    <div class="col-xs-2">
+      <div id="user_data">
+        <input type="text" id="user_name" placeholder="Please write your username to continue"/>
+      </div>
+    </div>
+
+    <div class="col-xs-2">
+      <div class="user_actions">
+        <button id="update_user_name" class="btn btn-primary">Set Username</button>
+        <button id='logout' class="btn btn-primary">Logout</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="body">
+    <div class="messages messages-main-container col-xs-12">
+      <ul></ul>
+    </div>
+  </section>
+
+  <section class="row footer">
+    <div class="col-xs-12">
+      <input type="text">
+    </div>
+  </section>
+</section>

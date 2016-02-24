@@ -11,10 +11,19 @@ socket.on('message', function(data) {
 });
 
 socket.on('history', function(data) {
-  data = JSON.parse(data);
   Object.keys(data).forEach(function(key) {
     renderChat(key, data[key]);
   });
+  activateThread(Object.keys(data)[0]);
+});
+
+socket.on('subscribed-thread', function(data) {
+  console.log('subscribed', data);
+});
+
+socket.on('empty-thread', function(data) {
+  console.log('empty', data);
+  renderChat(data.id, data.history);
 });
 
 window.addEventListener("load", function() {
@@ -53,17 +62,30 @@ window.addEventListener("load", function() {
   //updateChatScroll();
 //});
 
+function activateThread(id) {
+  $('#chat section.content').removeClass('current');
+  $('#chat section.content[data-thread-id="' + id +'"]').addClass('current');
+  $('#threads-list ul li').removeClass('active');
+  $('#threads-list ul li[data-thread-id="' + id +'"]').addClass('active');
+}
+
+function onThreadListClick(ev) {
+  var threadId = $(this).attr('data-thread-id');
+  activateThread(threadId);
+}
+
 function updateEvents() {
   $('#chat section.content section.footer input').keypress(function (e) {
     var key = e.which;
     if(key === 13) sendMessage();
   });
-};
+  $('#threads-list ul li').on('click', onThreadListClick);
+}
 
 function replyMessage(ev) {
   ev.preventDefault();
   var threadId = $(this).attr('data-thread-id');
-  console.log('reply', threadId);
+  socket.emit('subscribe', threadId);
   return false;
 }
 
@@ -75,12 +97,6 @@ function updateChatScroll(parent_id){
 function user() {
   return Cookies.get("username") ? Cookies.get("username") : false;
 }
-
-/*
-function refreshUserData() {
-  $("#user_data").html("<div>Welcome, " + user() + "</div>");
-}
-*/
 
 function refreshUserData() {
   if(user()) {
@@ -100,6 +116,7 @@ function refreshUserData() {
 function sendMessage() {
   var msg = $('#chat section.content.current section.footer input').val();
   var parentId = $('#chat section.content.current').attr('data-thread-id');
+  console.log(msg, parentId);
 
   if (!user() || msg === '') return false;
 

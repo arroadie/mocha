@@ -23,12 +23,31 @@ server.on('connection', function(socket) {
   socket.on('message', function(data) {
     Log.srv(`[Message] ${data.user_name}: ${data.message}`);
     let response = new Thread(data);
+
+    if (!pool.hasOwnProperty(data.parent_id)) {
+      // TODO: Subscribe
+      pool[data.parent_id] = [];
+    }
     pool[data.parent_id].push(response);
     server.emit('message', response);
   });
 
   socket.on('history', function(data) {
-    socket.emit('history', JSON.stringify(pool));
+    socket.emit('history', pool);
+  });
+
+  socket.on('subscribe', function(data) {
+    console.log('subs', data, pool);
+    if (pool.hasOwnProperty(data)) {
+      socket.emit('subscribed-thread', {
+        id: data,
+      });
+    } else {
+      socket.emit('empty-thread', {
+        id: data,
+        history: []
+      });
+    }
   });
 });
 
