@@ -86,53 +86,6 @@ html, body {
   clear: both;
 }
 
-.input-box {
-  background-color: white;
-  height: 50px;
-  padding: 0px;
-}
-
-.input-box textarea
-{
-  padding: 0px;
-  width: 278px;
-  height: 100%;
-  display: inline-block;
-  outline: 0px;
-  border-width: 0px;
-  resize: none;
-  border-width: 1px;
-  border-color: black;
-  border-style: solid;
-  font-size: 12px;
-  padding: 10px;
-  border-top-width: 0px;
-}
-
-/* Username */
-#user_name {
-  width:30%;
-  padding:10px;
-  outline:none;
-}
-
-#update_user_name {
-  position:absolute;
-  left:31%;
-  top:87px;
-  padding:10px;
-}
-
-/* Logout */
-#logout {
-  position:absolute;
-  right:15px;
-  top:14px;
-  padding:5px;
-}
-
-/* Footer */
-
-#message_box {
-  font-size:12px;
+button.login, button.logout {
+  margin-top: 15px;
 }

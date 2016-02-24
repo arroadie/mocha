@@ -33,36 +33,26 @@ window.addEventListener("load", function() {
   templates['thread'] = Handlebars.compile($("#thread_template").html());
   templates['thread_list_item'] = Handlebars.compile($("#thread_list_item_template").html());
 
-  socket.emit('history');
-});
-
-  $('#update_user_name').on('click', function(ev) {
-    ev.preventDefault();
-    Cookies.set("username", $('#user_name').val());
-    refreshUserData();
-  });
-
-  $('#user_name').keypress(function (e) {
-    if(e.which === 13) {
-      Cookies.set("username",$('#user_name').val());
-      refreshUserData();
-    }
-  });
-
-  $('#logout').on('click', function(e) {
-    e.preventDefault();
-    Cookies.remove("username");
-    refreshUserData();
-  });
-
   $(window).resize(function() {
     resizeWindow();
   });
 
-  refreshUserData();
   updateEvents();
-  //updateChatScroll();
-//});
+  socket.emit('history');
+});
+
+function login(ev) {
+  ev.preventDefault();
+  var username = prompt('Type your username:');
+  Cookies.set("username", username);
+  refreshUserData();
+}
+
+function logout(ev) {
+  ev.preventDefault();
+  Cookies.remove("username");
+  refreshUserData();
+}
 
 function activateThread(id) {
   $('#chat section.content').removeClass('current');
@@ -81,7 +71,17 @@ function updateEvents() {
     var key = e.which;
     if(key === 13) sendMessage();
   });
-  $('#threads-list ul li').on('click', onThreadListClick);
+  var threadListItems = $('#threads-list ul li');
+  threadListItems.off('click');
+  threadListItems.on('click', onThreadListClick);
+
+  var loginButtons = $('button.login');
+  loginButtons.off('click');
+  loginButtons.on('click', login);
+
+  var logoutButtons = $('button.logout');
+  logoutButtons.off('click');
+  logoutButtons.on('click', logout);
 }
 
 function replyMessage(ev) {
@@ -96,34 +96,31 @@ function updateChatScroll(parent_id){
   chat.scrollTop = chat.scrollHeight;
 }
 
-function user() {
-  return Cookies.get("username") ? Cookies.get("username") : false;
+function getUser() {
+  return Cookies.get("username") ? Cookies.get("username") : null;
 }
 
 function refreshUserData() {
-  if(user()) {
-    $("#message_box p").html("@" + user());
-    $("#user_name").hide();
-    $('#update_user_name').hide();
-    $('#logout').show();
+  console.log('asdasdasd', getUser());
+  if(getUser()) {
+    $('button.login').hide();
+    $('button.logout').show();
   } else {
-    $("#message_box p").html("");
-    $("#user_welcome").remove();
-    $("#user_name").show();
-    $('#logout').hide();
-    $('#update_user_name').show();
+    $('button.logout').hide();
+    $('button.login').show();
   }
 }
 
 function sendMessage() {
   var msg = $('#chat section.content.current section.footer input').val();
   var parentId = $('#chat section.content.current').attr('data-thread-id');
+  var user = getUser();
   console.log(msg, parentId);
 
-  if (!user() || msg === '') return false;
+  if (!user || msg === '') return false;
 
   var success = socket.emit('message', {
-    user_name: user(),
+    user_name: user,
     message: msg,
     parent_id: parentId
   });
@@ -159,6 +156,7 @@ function renderChat(id, history) {
   history.forEach(function(msg) {
     printMessage(msg);
   });
+  refreshUserData();
   updateChatScroll(id);
   resizeWindow();
   updateEvents();
