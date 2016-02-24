@@ -1,9 +1,8 @@
 <li class={{class}}>
-  <span>
-    <p class="message-header">
-      <b class="username">{{user_name}}</b>
-      <b class="timestamp">{{datetime}}</b>
-    </p>
-    <p class="message">{{{message}}}</p>
-  </span>
+  <p class="message-header">
+    <span class="username">{{user_name}}</span>
+    <span class="timestamp">{{datetime}}</span>
+    <span class=""><a href="#" class="reply" data-thread-id="{{id}}">reply</a></span>
+  </p>
+  <p class="message">{{{message}}}</p>
 </li>

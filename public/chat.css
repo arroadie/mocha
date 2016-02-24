@@ -32,10 +32,9 @@ html, body {
 
 .messages ul li {
   height: auto;
-  margin-bottom: 10px;
-  clear: both;
 }
 
+/*
 .messages ul li span {
   display: inline-block;
   width: 100%;
@@ -136,50 +135,36 @@ html, body {
   float: right;
   background-color: #dbedfe;
 }
-
+*/
 
 .messages ul li p.message-header {
   display:block;
   width:100%;
-  clear:both;
-  border-bottom: solid 1px gray;
-  padding-bottom:12px;
-  margin-bottom:12px;
+  border-bottom: solid 1px #eee;
   position:relative;
+  margin: 0 0 5px 0;
 }
 
 .messages ul li p.message {
   display:block;
   width:100%;
-  clear:both;
-  margin-top:12px;
 }
 
-.messages ul li b.timestamp {
-  float:right;
+.messages ul li .timestamp {
   font-size:11px;
-  position:absolute;
-  bottom:0;
-  right:14px;
   color:gray;
 }
 
-.messages ul li b.username {
-  float:left;
+.messages ul li span.username {
   font-size:12px;
-  position:absolute;
-  bottom:0;
-  left:2px;
   font-weight: bold;
 }
 
-.clear
-{
+.clear {
   clear: both;
 }
 
-.input-box
-{
+.input-box {
   background-color: white;
   height: 50px;
   padding: 0px;

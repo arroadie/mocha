@@ -54,10 +54,19 @@ window.addEventListener("load", function() {
     resizeWindow();
   });
 
+  $('a.reply').on('click', replyMessage);
+
   refreshUserData();
   resizeWindow();
   updateChatScroll();
 //});
+
+function replyMessage(ev) {
+  ev.preventDefault();
+  var threadId = $(this).attr('data-thread-id');
+  console.log('reply', threadId);
+  return false;
+}
 
 function updateChatScroll(){
     var element = document.getElementById("test");
@@ -113,6 +122,7 @@ function printMessage(data) {
   var classMessage = (data.username === user()) ? 'leftuser' : 'left';
   $("#test ul").append(messageTemplate(data));
   updateChatScroll();
+  $('a.reply').on('click', replyMessage);
 }
 
 function resizeWindow() {
