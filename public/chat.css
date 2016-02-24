@@ -34,109 +34,6 @@ html, body {
   height: auto;
 }
 
-/*
-.messages ul li span {
-  display: inline-block;
-  width: 100%;
-  padding: 5px;
-  border-radius: 4px;
-  position: relative;
-  border-width: 1px;
-  border-style: solid;
-  border-color: grey;
-}
-
-.messages ul li.left span {
-  background-color:#f6fcff;
-}
-
-.messages ul li.right span {
-  background-color:#fff;
-}
-
-
-.messages ul li span.left
-{
-  float: left;
-}
-
-.messages ul li span.left p
-{
-  font-style: italic;
-  font-size: 12px;
-  font-family: "Arial";
-}
-
-.messages ul li span.right p
-{
-  font-style: italic;
-  font-size: 12px;
-  font-family: "Arial";
-}
-
-.messages ul li span.left:after
-{
-  content: "";
-  display: inline-block;
-  position: absolute;
-  left: -8.5px;
-  top: 7px;
-  height: 0px;
-  width: 0px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid white;
-}
-
-.messages ul li span.left:before
-{
-  content: "";
-  display: inline-block;
-  position: absolute;
-  left: -9px;
-  top: 7px;
-  height: 0px;
-  width: 0px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid black;
-}
-
-.messages ul li span.right:after
-{
-  content: "";
-  display: inline-block;
-  position: absolute;
-  right: -8px;
-  top: 6px;
-  height: 0px;
-  width: 0px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-left: 8px solid #dbedfe;
-}
-
-.messages ul li span.right:before
-{
-  content: "";
-  display: inline-block;
-  position: absolute;
-  right: -9px;
-  top: 6px;
-  height: 0px;
-  width: 0px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-left: 8px solid black;
-}
-
-.messages ul li span.right
-{
-  float: right;
-  background-color: #dbedfe;
-}
-*/
-
 .messages ul li p.message-header {
   display:block;
   width:100%;
@@ -213,10 +110,8 @@ html, body {
 .commands {
   background-color: rgb(237, 239, 244);
   border: 1px solid #ccc;
-  position: fixed;
   bottom: 0;
   height: 55px;
-  width: 100%;
 }
 
 #message_box {

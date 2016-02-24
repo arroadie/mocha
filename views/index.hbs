@@ -17,7 +17,44 @@
 </head>
 
 <body>
-  <div class="header" data-thread-id="test">Test Room</div>
+  <div class="container-fluid">
+    <div class="row">
+      <div id="threads_list" class="col-sm-3 hidden-xs">
+      </div>
+
+      <div class="chatbox col-sm-9 col-xs-12">
+
+        <div class="row chat-header" data-thread-id="test">
+          <div class="col-xs-8">
+            <h1>Test Room</h1>
+          </div>
+
+          <div class="col-xs-2">
+            <div id="user_data">
+              <input type="text" id="user_name" placeholder="Please write your username to continue"/>
+            </div>
+          </div>
+
+          <div class="col-xs-2">
+            <div class="user_actions">
+              <button id="update_user_name" class="btn btn-primary">Set Username</button>
+              <button id='logout' class="btn btn-primary">Logout</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat"></div>
+
+        <div class="row commands">
+          <div class="col-sm-9 col-xs-12">
+            <div id="message_box"><input type="text" id="message_content"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- div class="header" data-thread-id="test">Test Room</div>
     <div id="user_data">
       <input type="text" id="user_name" placeholder="Please write your username to continue"/>
     </div>
@@ -46,14 +83,7 @@
         </div>
       </div>
     </div> <!-- chat_box -->
-
-
-    <div class="row commands">
-      <div class="col-xs-12">
-        <div id="message_box"><input type="text" id="message_content"></div>
-      </div>
-    </div>
-  </div> <!-- container -->
+  </div --> <!-- container -->
 </body>
 
 <script src='/public/js/app.js'></script>

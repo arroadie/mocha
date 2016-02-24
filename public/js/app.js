@@ -126,8 +126,10 @@ function printMessage(data) {
 }
 
 function resizeWindow() {
-  var height = $(window).innerHeight() - 130;
-  $('#chat-box').css('height', height + 'px');
+  var innerHeight = $(window).innerHeight();
+  var height = innerHeight - 125;
+  $('.chat').css('height', height + 'px');
+  $('#threads_list').css('height', innerHeight + 'px');
 }
 
 
