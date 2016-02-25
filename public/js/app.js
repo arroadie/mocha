@@ -2,7 +2,8 @@ var socket = io('http://' + window.location.hostname + ':3000');
 var templates = {};
 var capturingReplyClick = false;
 var userInfo = {
-  threads: []
+  subscribedThreads: [],
+  fetchedThreads:[]
 };
 
 socket.on('connect', function (data) {
@@ -13,11 +14,16 @@ socket.on('message', function(data) {
   printMessage(data);
 });
 
-socket.on('history', function(data) {
-  Object.keys(data).forEach(function(key) {
-    renderChat(key, data[key]);
+socket.on('state', function(data) {
+  data.forEach(function(key) {
+    renderThreadElement(key);
   });
-  activateThread(Object.keys(data)[0]);
+    renderThreadContent(data[0]);
+  socket.emit('thread-children', data[0]);
+});
+
+socket.on('thread-content', function(data) {
+  updateThreadContent(data.id, data.children);
 });
 
 socket.on('subscribed-thread', function(data) {
@@ -50,7 +56,6 @@ window.addEventListener("load", function() {
 
   updateEvents();
   socket.emit('state', {user_name: getUser()});
-  //socket.emit('history', {parent_id: 1});
 });
 
 function login(ev) {
@@ -74,18 +79,18 @@ function activateThread(id) {
 }
 
 function onThreadListClick(ev) {
-  var threadId = $(this).attr('data-thread-id');
-  activateThread(threadId);
+  var id = $(this).attr('data-thread-id');
+  if (userInfo.fetchedThreads.indexOf(id) < 0) {
+    renderThreadContent(id);
+    socket.emit('thread-children', id);
+  } else {
+    activateThread(id);
+  }
 }
 
 function updateEvents() {
-  $('#chat section.content section.footer input').keypress(function (e) {
-    var key = e.which;
-    if(key === 13) sendMessage();
-  });
-  var threadListItems = $('#threads-list ul li');
-  threadListItems.off('click');
-  threadListItems.on('click', onThreadListClick);
+  updateChatEvents();
+  updateThreadsListEvents();
 
   var loginButtons = $('button.login');
   loginButtons.off('click');
@@ -96,10 +101,23 @@ function updateEvents() {
   logoutButtons.on('click', logout);
 }
 
+function updateChatEvents() {
+  $('#chat section.content section.footer input').keypress(function (e) {
+    var key = e.which;
+    if(key === 13) sendMessage();
+  });
+}
+
+function updateThreadsListEvents() {
+  var threadListItems = $('#threads-list ul li');
+  threadListItems.off('click');
+  threadListItems.on('click', onThreadListClick);
+}
+
 function replyMessage(ev) {
   ev.preventDefault();
   var threadId = $(this).attr('data-thread-id');
-  if (userInfo.threads.indexOf(threadId) >= 0) {
+  if (userInfo.subscribedThreads.indexOf(threadId) >= 0) {
     activateThread(threadId);
   } else {
     socket.emit('subscribe', threadId);
@@ -167,18 +185,39 @@ function resizeWindow() {
   $('#threads-list').css('height', innerHeight + 'px');
 }
 
-function renderChat(id, history) {
-  var listItem = $('#threads-list ul li[data-thread-id="' + id +'"]');
-  if (listItem.length > 0) return true;
+function renderThreadElement(id) {
+  if (userInfo.subscribedThreads.indexOf(id) < 0) {
+    userInfo.subscribedThreads.push(id);
+    //var listItem = $('#threads-list ul li[data-thread-id="' + id +'"]');
+    //if (listItem.length > 0) return true;
 
-  var obj = {thread_id: id, name: id};
-  $('#threads-list ul').append(templates.thread_list_item(obj));
-  $('#chat').append(templates.thread(obj));
-  history.forEach(function(msg) {
+    var obj = {thread_id: id, name: id};
+    $('#threads-list ul').append(templates.thread_list_item(obj));
+    updateThreadsListEvents();
+  }
+}
+
+function renderThreadContent(id) {
+  if (userInfo.fetchedThreads.indexOf(id) < 0) {
+    userInfo.fetchedThreads.push(id);
+    var obj = {thread_id: id, name: id};
+    $('#chat').append(templates.thread(obj));
+  }
+  refreshUserData();
+  resizeWindow();
+}
+
+function updateThreadContent(id, children) {
+  $('#chat section.content[data-thread-id="' + id + '"] .body .messages .progress').remove();
+
+  children.forEach(function(msg) {
     printMessage(msg);
   });
-  refreshUserData();
   updateChatScroll(id);
-  resizeWindow();
-  updateEvents();
+  updateChatEvents();
+}
+
+function renderChat(id, children) {
+  renderThreadElement(id);
+  renderThreadContent(id, children);
 }

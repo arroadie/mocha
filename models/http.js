@@ -26,12 +26,13 @@ var Http = (function(){
 
           try {
             msg = JSON.parse(msg);
-          } catch(e) {}
-          if (response.statusCode === 200) {
-            resolve({status: 200, response: msg});
-          } else {
+          } catch(e) {
             msg = msg.replace("\n", " ");
-            reject({status: response.statusCode, response: msg});
+          }
+          if (response.statusCode === 200) {
+            resolve(msg);
+          } else {
+            reject(msg);
           }
         });
       });

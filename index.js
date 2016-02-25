@@ -26,31 +26,55 @@ server.on('connection', function(socket) {
   socket.on('state', function(data) {
     var req = Http.get(`/users/${data.user_name}/state`)
     .then(function(res) {
+      socket.emit('state', res);
     })
     .catch(function(err) {
       socket.emit('notification', {
         title: 'Error fetching user settings',
-        message: err.response
+        message: err
       });
     });
   });
 
-  // TODO: Join
+  socket.on('thread-children', function(data) {
+    var req = Http.get(`/threads/${data}/children`)
+    .then(function(res) {
+      socket.emit('thread-content', res);
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error fetching thread content',
+        message: err
+      });
+    });
+  });
+
+  socket.on('subscribe', function(data) {
+    var req = Http.put(`/users/${data.user_name}/threads/${data.parent_id}/subscription`)
+    .then(function(res) {
+      socket.emit('subscribed-thread', res);
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error subscribing thread',
+        message: err
+      });
+    });
+  });
+
   socket.on('message', function(data) {
     Log.srv(`[Message::${data.parent_id}] – ${data.user_name}: ${data.message}`);
-    let response = new Thread(data);
+    let thread = new Thread(data);
 
-    console.log('resp', JSON.stringify(response));
-
-    var req = Http.put(`/threads/${data.parent_id}`, response)
+    var req = Http.put(`/threads/${data.parent_id}`, thread)
     .then(function(res) {
-      server.emit('message', res.response);
+      server.emit('message', res);
     })
     .catch(function(err) {
       socket.emit('inchat-notification', {
         parent_id: data.parent_id,
         class: 'error',
-        message: 'Error sending message: ' + err.response
+        message: 'Error sending message: ' + err
       });
     });
   });
@@ -58,32 +82,13 @@ server.on('connection', function(socket) {
   socket.on('history', function(data) {
     var req = Http.get(`/threads/${data.parent_id}/children`)
     .then(function(res) {
-      var r = {};
-      r[data.parent_id] = res.response;
-      socket.emit('history', {
-      });
+      socket.emit('history', res);
     })
     .catch(function(err) {
       socket.emit('inchat-notification', {
         parent_id: data.parent_id,
         class: 'error',
-        message: 'Error sending message: ' + err.response
-      });
-    });
-  });
-
-  socket.on('subscribe', function(data) {
-    var req = Http.put(`/users/${data.user_id}/threads/${data.parent_id}/subscription`)
-    .then(function(res) {
-      socket.emit('subscribed-thread', {
-        id: data.id,
-        history: data.history
-      });
-    })
-    .catch(function(err) {
-      socket.emit('notification', {
-        title: 'Error subscribing thread',
-        message: err.response
+        message: 'Error sending message: ' + err
       });
     });
   });
