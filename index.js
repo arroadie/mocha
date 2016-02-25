@@ -23,6 +23,18 @@ const port = 8080;
 server.on('connection', function(socket) {
   Log.srv(`Connected client: ${socket.id}`);
 
+  socket.on('state', function(data) {
+    var req = Http.get(`/users/${data.user_name}/state`)
+    .then(function(res) {
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error fetching user settings',
+        message: err.response
+      });
+    });
+  });
+
   // TODO: Join
   socket.on('message', function(data) {
     Log.srv(`[Message::${data.parent_id}] – ${data.user_name}: ${data.message}`);
@@ -30,8 +42,7 @@ server.on('connection', function(socket) {
 
     console.log('resp', JSON.stringify(response));
 
-    Log.srv(`PUT to /threads/${data.parent_id}`);
-    var req = Http.put('/threads/' + data.parent_id, response)
+    var req = Http.put(`/threads/${data.parent_id}`, response)
     .then(function(res) {
       server.emit('message', res.response);
     })
@@ -45,14 +56,12 @@ server.on('connection', function(socket) {
   });
 
   socket.on('history', function(data) {
-    var url = `/threads/${data.parent_id}/children`;
-    Log.srv(`GET to ${url}`);
-    var req = Http.get(url)
+    var req = Http.get(`/threads/${data.parent_id}/children`)
     .then(function(res) {
       var r = {};
       r[data.parent_id] = res.response;
-      socket.emit('history', r);
-      //server.emit('message', res.response);
+      socket.emit('history', {
+      });
     })
     .catch(function(err) {
       socket.emit('inchat-notification', {
@@ -64,19 +73,19 @@ server.on('connection', function(socket) {
   });
 
   socket.on('subscribe', function(data) {
-    Log.srv(`Trying to subscribe to ${data}`);
-    if (pool.hasOwnProperty(data)) {
-      Log.srv(` -> Already subscribed to thread`);
+    var req = Http.put(`/users/${data.user_id}/threads/${data.parent_id}/subscription`)
+    .then(function(res) {
       socket.emit('subscribed-thread', {
-        id: data,
+        id: data.id,
+        history: data.history
       });
-    } else {
-      Log.srv(` -> Thread empty`);
-      socket.emit('empty-thread', {
-        id: data,
-        history: []
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error subscribing thread',
+        message: err.response
       });
-    }
+    });
   });
 });
 

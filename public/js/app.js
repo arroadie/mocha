@@ -1,7 +1,9 @@
 var socket = io('http://' + window.location.hostname + ':3000');
 var templates = {};
-var subscriptions = ['test'];
 var capturingReplyClick = false;
+var userInfo = {
+  threads: []
+};
 
 socket.on('connect', function (data) {
   console.log('connected successfull');
@@ -32,6 +34,10 @@ socket.on('inchat-notification', function(data) {
   printInChatNotification(data);
 });
 
+socket.on('notification', function(data) {
+  alert([data.title, data.message].join('. '));
+});
+
 window.addEventListener("load", function() {
   templates['message'] = Handlebars.compile($("#message_template").html());
   templates['thread'] = Handlebars.compile($("#thread_template").html());
@@ -43,7 +49,8 @@ window.addEventListener("load", function() {
   });
 
   updateEvents();
-  socket.emit('history', {parent_id: 1});
+  socket.emit('state', {user_name: getUser()});
+  //socket.emit('history', {parent_id: 1});
 });
 
 function login(ev) {
@@ -92,7 +99,11 @@ function updateEvents() {
 function replyMessage(ev) {
   ev.preventDefault();
   var threadId = $(this).attr('data-thread-id');
-  socket.emit('subscribe', threadId);
+  if (userInfo.threads.indexOf(threadId) >= 0) {
+    activateThread(threadId);
+  } else {
+    socket.emit('subscribe', threadId);
+  }
   return false;
 }
 

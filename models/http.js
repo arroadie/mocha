@@ -1,5 +1,6 @@
 'use strict';
 let http = require('http');
+let Log = require('./log');
 
 const hostname = 'geekon32.snc1';
 const port = 8080;
@@ -23,9 +24,11 @@ var Http = (function(){
         response.on('data', function(chunk) {
           var msg = chunk.toString();
 
-          console.log(JSON.parse(msg));
+          try {
+            msg = JSON.parse(msg);
+          } catch(e) {}
           if (response.statusCode === 200) {
-            resolve({status: 200, response: JSON.parse(msg)});
+            resolve({status: 200, response: msg});
           } else {
             msg = msg.replace("\n", " ");
             reject({status: response.statusCode, response: msg});
@@ -44,9 +47,11 @@ var Http = (function(){
 
   return {
     get: function(path) {
+      Log.srv(`GET ${path}`);
       return request(path, 'GET');
     },
     put: function(path, data) {
+      Log.srv(`PUT ${path}`);
       return request(path, 'PUT', data);
     }
   }
