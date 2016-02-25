@@ -29,7 +29,6 @@ socket.on('empty-thread', function(data) {
 });
 
 socket.on('inchat-notification', function(data) {
-  console.log('epa', data);
   printInChatNotification(data);
 });
 
@@ -44,7 +43,7 @@ window.addEventListener("load", function() {
   });
 
   updateEvents();
-  socket.emit('history');
+  socket.emit('history', {parent_id: 1});
 });
 
 function login(ev) {
@@ -107,7 +106,6 @@ function getUser() {
 }
 
 function refreshUserData() {
-  console.log('asdasdasd', getUser());
   if(getUser()) {
     $('button.login').hide();
     $('button.logout').show();

@@ -2,7 +2,6 @@
 
 let fs = require('fs');
 let koa = require('koa');
-let http = require('http');
 let router = require('koa-router')();
 let serve = require('koa-serve');
 let path = require('path');
@@ -13,6 +12,7 @@ let server = require('socket.io')(3000);
 // Models
 let Log = require('./models/log');
 let Thread = require('./models/thread');
+let Http = require('./models/http.js');
 
 let pinned = [];
 let pool = {'1':[]};
@@ -28,52 +28,39 @@ server.on('connection', function(socket) {
     Log.srv(`[Message::${data.parent_id}] – ${data.user_name}: ${data.message}`);
     let response = new Thread(data);
 
-    var options = {
-      hostname: hostname,
-      port: port,
-      method: 'PUT',
-      path: '/threads/' + data.parent_id,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
     console.log('resp', JSON.stringify(response));
 
-    Log.srv("Sending PUT to /threads");
-    var req = http.request(options);
-    req.on('response', function(response) {
-
-      response.on('data', function(chunk) {
-        if (response.statusCode === 200) {
-          Log.srv("PUT successful");
-          server.emit('message', response);
-        } else {
-          var msg = chunk.toString().replace("\n", " ");
-          Log.srv("Error with PUT:");
-          Log.srv(` -> statusCode: ${response.statusCode}`);
-          Log.srv(` -> message: ${msg}`);
-          socket.emit('inchat-notification', {
-            parent_id: data.parent_id,
-            class: 'error',
-            message: 'Error sending message: ' + msg
-          });
-        }
+    Log.srv(`PUT to /threads/${data.parent_id}`);
+    var req = Http.put('/threads/' + data.parent_id, response)
+    .then(function(res) {
+      server.emit('message', res.response);
+    })
+    .catch(function(err) {
+      socket.emit('inchat-notification', {
+        parent_id: data.parent_id,
+        class: 'error',
+        message: 'Error sending message: ' + err.response
       });
-
     });
-    req.write(JSON.stringify(response));
-    req.end();
-
-    //if (!pool.hasOwnProperty(data.parent_id)) {
-    //  // TODO: Subscribe
-    //  pool[data.parent_id] = [];
-    //}
-    //pool[data.parent_id].push(response);
-    //server.emit('message', response);
   });
 
   socket.on('history', function(data) {
-    socket.emit('history', pool);
+    var url = `/threads/${data.parent_id}/children`;
+    Log.srv(`GET to ${url}`);
+    var req = Http.get(url)
+    .then(function(res) {
+      var r = {};
+      r[data.parent_id] = res.response;
+      socket.emit('history', r);
+      //server.emit('message', res.response);
+    })
+    .catch(function(err) {
+      socket.emit('inchat-notification', {
+        parent_id: data.parent_id,
+        class: 'error',
+        message: 'Error sending message: ' + err.response
+      });
+    });
   });
 
   socket.on('subscribe', function(data) {
