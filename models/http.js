@@ -7,14 +7,19 @@ const port = 8080;
 
 var Http = (function(){
   var request = function(path, method, data) {
+    data = data ? JSON.stringify(data) : {};
+
     var options = {
       hostname: hostname,
       port: port,
       method: method,
       path: path,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       }
+    }
+    if (method === 'DELETE') {
+      options.headers['Content-Length'] = 0;
     }
 
     var promise = new Promise(function(resolve, reject) {
@@ -40,9 +45,7 @@ var Http = (function(){
         });
       });
 
-      if (data) {
-        req.write(JSON.stringify(data));
-      }
+      if (data.length > 0) req.write(data);
       req.end();
     });
 
@@ -57,6 +60,10 @@ var Http = (function(){
     put: function(path, data) {
       Log.srv(`PUT ${path}`);
       return request(path, 'PUT', data);
+    },
+    delete: function(path) {
+      Log.srv(`DELETE ${path}`);
+      return request(path, 'DELETE');
     }
   }
 })();

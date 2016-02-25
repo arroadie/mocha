@@ -24,14 +24,18 @@ socket.on('state', function(data) {
 });
 
 socket.on('thread-content', function(data) {
-  console.log('tc', data);
   updateThreadContent(data.id, data.children);
 });
 
 socket.on('subscribed-thread', function(data) {
-  console.log('subscribed', data);
   updateThreadContent(data.id, data.children);
   activateThread(data.id);
+});
+
+socket.on('unsubscribed-thread', function(data) {
+  console.log('unsub', data);
+  removeThread(data.id);
+  activateThread('home');
 });
 
 socket.on('empty-thread', function(data) {
@@ -117,6 +121,15 @@ function updateChatEvents() {
     var key = e.which;
     if(key === 13) sendMessage();
   });
+
+  $('.unsubscribe').on('click', function(ev) {
+    ev.preventDefault();
+    var threadId = $(this).attr('data-thread-id');
+    socket.emit('unsubscribe', {
+      parent_id: threadId,
+      user_name: getUser()
+    });
+  });
 }
 
 function updateThreadsListEvents() {
@@ -128,10 +141,15 @@ function updateThreadsListEvents() {
 function replyMessage(ev) {
   ev.preventDefault();
   var threadId = $(this).attr('data-thread-id');
+  console.log('reply message', threadId);
   if (userInfo.subscribedThreads.indexOf(threadId) >= 0) {
     activateThread(threadId);
   } else {
-    socket.emit('subscribe', threadId);
+    renderThreadElement(threadId);
+    socket.emit('subscribe', {
+      parent_id: threadId,
+      user_name: getUser()
+    });
   }
   return false;
 }
@@ -233,6 +251,17 @@ function renderThreadContent(id) {
   }
   refreshUserData();
   resizeWindow();
+}
+
+function removeThread(id) {
+  $('#threads-list ul li[data-thread-id="' + id +'"]').remove();
+  $('#chat section.content[data-thread-id="' + id +'"]').remove();
+  userInfo.subscribedThreads = userInfo.subscribedThreads.filter(function(e, i, a) {
+    return e === id;
+  });
+  userInfo.fetchedThreads = userInfo.fetchedThreads.filter(function(e, i, a) {
+    return e === id;
+  });
 }
 
 function updateThreadContent(id, children) {

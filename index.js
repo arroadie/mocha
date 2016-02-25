@@ -69,6 +69,19 @@ server.on('connection', function(socket) {
     });
   });
 
+  socket.on('unsubscribe', function(data) {
+    var req = Http.delete(`/users/${data.user_name}/threads/${data.parent_id}/subscribe`)
+    .then(function(res) {
+      socket.emit('unsubscribed-thread', res);
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error unsubscribing thread',
+        message: err
+      });
+    });
+  });
+
   socket.on('message', function(data) {
     Log.srv(`[Message::${data.parent_id}] – ${data.user_name}: ${data.message}`);
     let thread = new Thread(data);
