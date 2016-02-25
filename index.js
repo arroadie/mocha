@@ -115,6 +115,7 @@ router.get('/', function* (next) {
   yield this.render('index', {
     templates: {
       message: fs.readFileSync(path.join(__dirname,'views', 'message.hbs')).toString(),
+      home: fs.readFileSync(path.join(__dirname,'views', 'home.hbs')).toString(),
       inchat_notification: fs.readFileSync(path.join(__dirname,'views', 'inchat_notification.hbs')).toString(),
       thread: fs.readFileSync(path.join(__dirname,'views', 'thread.hbs')).toString(),
       thread_list_item: fs.readFileSync(path.join(__dirname,'views', 'thread_list_item.hbs')).toString(),

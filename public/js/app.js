@@ -47,6 +47,7 @@ socket.on('notification', function(data) {
 window.addEventListener("load", function() {
   templates['message'] = Handlebars.compile($("#message_template").html());
   templates['thread'] = Handlebars.compile($("#thread_template").html());
+  templates['home'] = Handlebars.compile($("#home_template").html());
   templates['thread_list_item'] = Handlebars.compile($("#thread_list_item_template").html());
   templates['inchat_notification'] = Handlebars.compile($("#inchat_notification_template").html());
 
@@ -54,6 +55,8 @@ window.addEventListener("load", function() {
     resizeWindow();
   });
 
+  renderHome();
+  resizeWindow();
   updateEvents();
   socket.emit('state', {user_name: getUser()});
 });
@@ -83,9 +86,8 @@ function onThreadListClick(ev) {
   if (userInfo.fetchedThreads.indexOf(id) < 0) {
     renderThreadContent(id);
     socket.emit('thread-children', id);
-  } else {
-    activateThread(id);
   }
+  activateThread(id);
 }
 
 function updateEvents() {
@@ -183,6 +185,16 @@ function resizeWindow() {
   var height = innerHeight - 125;
   $('#chat section.content section.body').css('height', height + 'px');
   $('#threads-list').css('height', innerHeight + 'px');
+}
+
+function renderHome() {
+  renderThreadElement('home');
+  if (userInfo.fetchedThreads.indexOf('home') < 0) {
+    userInfo.fetchedThreads.push('home');
+    $('#chat').append(templates.home({}));
+  }
+  resizeWindow();
+  activateThread('home');
 }
 
 function renderThreadElement(id) {

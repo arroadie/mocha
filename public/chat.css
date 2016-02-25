@@ -39,6 +39,11 @@ html, body {
   color: gray;
 }
 
+#chat section.home section.box {
+  border: 1px solid #ccc;
+  min-height: 200px;
+}
+
 .nav-pills > li > a {
   border-radius: 0;
 }
