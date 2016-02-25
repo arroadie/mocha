@@ -96,7 +96,7 @@ function activateThread(id) {
 
 function onThreadListClick(ev) {
   var id = $(this).attr('data-thread-id');
-  if (userInfo.fetchedThreads.indexOf(id) < 0) {
+  if (getFetchedThread(id) < 0 && id !== 'home') {
     renderThreadContent(id);
     socket.emit('thread-children', id);
   }
@@ -142,7 +142,7 @@ function replyMessage(ev) {
   ev.preventDefault();
   var threadId = $(this).attr('data-thread-id');
   console.log('reply message', threadId);
-  if (userInfo.subscribedThreads.indexOf(threadId) >= 0) {
+  if (getSubscribedThread(threadId) >= 0) {
     activateThread(threadId);
   } else {
     renderThreadElement(threadId);
@@ -223,8 +223,8 @@ function joinUser() {
 
 function renderHome() {
   renderThreadElement('home');
-  if (userInfo.fetchedThreads.indexOf('home') < 0) {
-    userInfo.fetchedThreads.push('home');
+  if (getFetchedThread('home') < 0) {
+    addFetchedThread('home');
     $('#chat').append(templates.home({}));
   }
   resizeWindow();
@@ -232,20 +232,20 @@ function renderHome() {
 }
 
 function renderThreadElement(id) {
-  if (userInfo.subscribedThreads.indexOf(id) < 0) {
-    userInfo.subscribedThreads.push(id);
-    //var listItem = $('#threads-list ul li[data-thread-id="' + id +'"]');
-    //if (listItem.length > 0) return true;
+  console.log('render list before', userInfo.subscribedThreads);
+  if (getSubscribedThread(id) < 0) {
+    addSubscribedThread(id);
 
     var obj = {thread_id: id, name: id};
     $('#threads-list ul').append(templates.thread_list_item(obj));
     updateThreadsListEvents();
   }
+  console.log('render list after', userInfo.subscribedThreads);
 }
 
 function renderThreadContent(id) {
-  if (userInfo.fetchedThreads.indexOf(id) < 0) {
-    userInfo.fetchedThreads.push(id);
+  if (getFetchedThread(id) < 0) {
+    addFetchedThread(id);
     var obj = {thread_id: id, name: id};
     $('#chat').append(templates.thread(obj));
   }
@@ -254,14 +254,16 @@ function renderThreadContent(id) {
 }
 
 function removeThread(id) {
+  console.log('remove list before', userInfo.subscribedThreads);
   $('#threads-list ul li[data-thread-id="' + id +'"]').remove();
   $('#chat section.content[data-thread-id="' + id +'"]').remove();
   userInfo.subscribedThreads = userInfo.subscribedThreads.filter(function(e, i, a) {
-    return e === id;
+    return e !== id + '';
   });
   userInfo.fetchedThreads = userInfo.fetchedThreads.filter(function(e, i, a) {
-    return e === id;
+    return e !== id + '';
   });
+  console.log('remove list after', userInfo.subscribedThreads);
 }
 
 function updateThreadContent(id, children) {
@@ -278,4 +280,20 @@ function updateThreadContent(id, children) {
 function renderChat(id, children) {
   renderThreadElement(id);
   renderThreadContent(id, children);
+}
+
+function getSubscribedThread(id) {
+  return userInfo.subscribedThreads.indexOf(id + '');
+}
+
+function getFetchedThread(id) {
+  return userInfo.fetchedThreads.indexOf(id + '');
+}
+
+function addSubscribedThread(id) {
+  userInfo.subscribedThreads.push(id + '');
+}
+
+function addFetchedThread(id) {
+  userInfo.fetchedThreads.push(id + '');
 }
