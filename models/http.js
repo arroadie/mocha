@@ -20,10 +20,13 @@ var Http = (function(){
     var promise = new Promise(function(resolve, reject) {
 
       var req = http.request(options);
+      var msg = '';
       req.on('response', function(response) {
         response.on('data', function(chunk) {
-          var msg = chunk.toString();
+          msg += chunk;
+        });
 
+        response.on('end', function() {
           try {
             msg = JSON.parse(msg);
           } catch(e) {

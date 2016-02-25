@@ -2,6 +2,7 @@ var socket = io('http://' + window.location.hostname + ':3000');
 var templates = {};
 var capturingReplyClick = false;
 var userInfo = {
+  loggedIn: false,
   subscribedThreads: [],
   fetchedThreads:[]
 };
@@ -18,16 +19,18 @@ socket.on('state', function(data) {
   data.forEach(function(key) {
     renderThreadElement(key);
   });
-    renderThreadContent(data[0]);
-  socket.emit('thread-children', data[0]);
+  //renderThreadContent(data[0]);
+  //socket.emit('thread-children', data[0]);
 });
 
 socket.on('thread-content', function(data) {
+  console.log('tc', data);
   updateThreadContent(data.id, data.children);
 });
 
 socket.on('subscribed-thread', function(data) {
   console.log('subscribed', data);
+  updateThreadContent(data.id, data.children);
   activateThread(data.id);
 });
 
@@ -55,6 +58,7 @@ window.addEventListener("load", function() {
     resizeWindow();
   });
 
+  joinUser();
   renderHome();
   resizeWindow();
   updateEvents();
@@ -64,7 +68,12 @@ window.addEventListener("load", function() {
 function login(ev) {
   ev.preventDefault();
   var username = prompt('Type your username:');
+  if (username === '') {
+    alert('Username can not be empty');
+    return false;
+  }
   Cookies.set("username", username);
+  socket.emit('join', username);
   refreshUserData();
 }
 
@@ -187,6 +196,13 @@ function resizeWindow() {
   $('#threads-list').css('height', innerHeight + 'px');
 }
 
+function joinUser() {
+  var username = getUser();
+  if (username !== '') {
+    socket.emit('join', username);
+  }
+}
+
 function renderHome() {
   renderThreadElement('home');
   if (userInfo.fetchedThreads.indexOf('home') < 0) {
@@ -222,6 +238,7 @@ function renderThreadContent(id) {
 function updateThreadContent(id, children) {
   $('#chat section.content[data-thread-id="' + id + '"] .body .messages .progress').remove();
 
+  console.log('children jskj', children);
   children.forEach(function(msg) {
     printMessage(msg);
   });

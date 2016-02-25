@@ -14,6 +14,7 @@ let Log = require('./models/log');
 let Thread = require('./models/thread');
 let Http = require('./models/http.js');
 
+let usersPool = {};
 let pinned = [];
 let pool = {'1':[]};
 
@@ -22,6 +23,12 @@ const port = 8080;
 
 server.on('connection', function(socket) {
   Log.srv(`Connected client: ${socket.id}`);
+
+  socket.on('join', function(data) {
+    console.log('join', data);
+    Log.srv(`Joined user '${data}' with socket id '${socket.id}'`);
+    usersPool[data] = socket;
+  });
 
   socket.on('state', function(data) {
     var req = Http.get(`/users/${data.user_name}/state`)
@@ -50,7 +57,7 @@ server.on('connection', function(socket) {
   });
 
   socket.on('subscribe', function(data) {
-    var req = Http.put(`/users/${data.user_name}/threads/${data.parent_id}/subscription`)
+    var req = Http.put(`/users/${data.user_name}/threads/${data.parent_id}/subscribe`)
     .then(function(res) {
       socket.emit('subscribed-thread', res);
     })
@@ -122,6 +129,18 @@ router.get('/', function* (next) {
     }
   });
 });
+
+router.put('/threads/:id/reply', function* (next) {
+  this.body = 'ok';
+});
+
+router.put('/users/:username/mention', function* (next) {
+  console.log('mention', usersPool[this.params.username]);
+  console.log(this.body);
+  usersPool[this.params.username].emit('mention', this.body);
+  this.body = 'ok';
+});
+
 app.use(router.routes());
 
 app.listen(8001);
