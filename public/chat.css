@@ -10,6 +10,16 @@ html, body {
   overflow: scroll;
 }
 
+
+#threads-list .header h4 {
+  float: right;
+  padding-right: 10px;
+}
+
+#threads-list .header .button {
+  float: left;
+}
+
 #chat section.content {
   display: none;
 }
@@ -39,9 +49,20 @@ html, body {
   color: gray;
 }
 
-#chat section.home section.box {
-  border: 1px solid #ccc;
+#chat section.home section .box {
+  border: 1px solid #eee;
   min-height: 200px;
+  margin-bottom: 20px;
+  background-color: lightyellow;
+}
+
+#chat section.home section .box h2 {
+  font-size: 1.6em;
+  padding: 0 10px;
+}
+
+#chat section.home section .box h2 .fa {
+  padding: 0 10px;
 }
 
 .nav-pills > li > a {

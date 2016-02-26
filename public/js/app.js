@@ -16,6 +16,7 @@ socket.on('message', function(data) {
 });
 
 socket.on('state', function(data) {
+  console.log('data', data);
   data.forEach(function(key) {
     renderThreadElement(key);
   });
@@ -33,13 +34,22 @@ socket.on('subscribed-thread', function(data) {
 });
 
 socket.on('unsubscribed-thread', function(data) {
-  console.log('unsub', data);
   removeThread(data.id);
   activateThread('home');
 });
 
+socket.on('favorite-message', function(data) {
+  console.log('fav', data);
+  var favs = $('a.favorite[data-message-id="' + data.id + '"]');
+  favs.attr('data-is-favorite', data.status);
+  if (data.status === true) {
+    favs.text('unfav');
+  } else {
+    favs.text('fav');
+  }
+});
+
 socket.on('empty-thread', function(data) {
-  console.log('empty', data);
   renderChat(data.id, data.history);
 });
 
@@ -60,6 +70,24 @@ window.addEventListener("load", function() {
 
   $(window).resize(function() {
     resizeWindow();
+  });
+
+  $('.create-room').on('click', function(ev) {
+    ev.preventDefault();
+    var roomName = prompt('Set the room name:');
+    if (roomName === '') {
+      createRoom(roomName);
+    }
+    $('#threads-list .header .button').removeAttr('open');
+    $('#threads-list .header .button button').attr('aria-expanded', false);
+    return false;
+  });
+
+  $('.private-chat').on('click', function(ev) {
+    ev.preventDefault();
+    console.log('private-chat');
+    $('.open > .dropdown-menu').hide();
+    return false;
   });
 
   joinUser();
@@ -138,19 +166,41 @@ function updateThreadsListEvents() {
   threadListItems.on('click', onThreadListClick);
 }
 
+function createRoom(name) {
+  socket.emit('create-room', {
+    user_id: getUser(),
+    message: name
+  });
+}
+
 function replyMessage(ev) {
   ev.preventDefault();
-  var threadId = $(this).attr('data-thread-id');
-  console.log('reply message', threadId);
+  var threadId = $(this).attr('data-message-id');
+  var message = $('.message-object[data-thread-id="' + threadId + '"] .message').text();
+  console.log('reply message', threadId, message);
   if (getSubscribedThread(threadId) >= 0) {
     activateThread(threadId);
   } else {
-    renderThreadElement(threadId);
+    renderThreadElement(threadId, message);
     socket.emit('subscribe', {
       parent_id: threadId,
       user_name: getUser()
     });
   }
+  return false;
+}
+
+function favoriteMessage(ev) {
+  ev.preventDefault();
+  var messageId = $(this).attr('data-message-id');
+  var isFavorite = $(this).attr('data-is-favorite');
+
+  console.log('fav message', messageId);
+  socket.emit('favorite-message', {
+    id: messageId,
+    user_name: getUser(),
+    favorite: isFavorite
+  });
   return false;
 }
 
@@ -177,7 +227,6 @@ function sendMessage() {
   var msg = $('#chat section.content.current section.footer input').val();
   var parentId = $('#chat section.content.current').attr('data-thread-id');
   var user = getUser();
-  console.log(msg, parentId);
 
   if (!user || msg === '') return false;
 
@@ -199,6 +248,8 @@ function printMessage(data) {
   updateChatScroll(data.parent_id);
   $('a.reply').off('click');
   $('a.reply').on('click', replyMessage);
+  $('a.favorite').off('click');
+  $('a.favorite').on('click', favoriteMessage);
 }
 
 function printInChatNotification(data) {
@@ -222,7 +273,7 @@ function joinUser() {
 }
 
 function renderHome() {
-  renderThreadElement('home');
+  renderThreadElement('home', 'Home');
   if (getFetchedThread('home') < 0) {
     addFetchedThread('home');
     $('#chat').append(templates.home({}));
@@ -231,16 +282,15 @@ function renderHome() {
   activateThread('home');
 }
 
-function renderThreadElement(id) {
-  console.log('render list before', userInfo.subscribedThreads);
+function renderThreadElement(id, name) {
   if (getSubscribedThread(id) < 0) {
     addSubscribedThread(id);
 
-    var obj = {thread_id: id, name: id};
-    $('#threads-list ul').append(templates.thread_list_item(obj));
+    name = name || id;
+    var obj = {thread_id: id, name: name};
+    $('#threads-list ul.nav').append(templates.thread_list_item(obj));
     updateThreadsListEvents();
   }
-  console.log('render list after', userInfo.subscribedThreads);
 }
 
 function renderThreadContent(id) {
@@ -254,7 +304,6 @@ function renderThreadContent(id) {
 }
 
 function removeThread(id) {
-  console.log('remove list before', userInfo.subscribedThreads);
   $('#threads-list ul li[data-thread-id="' + id +'"]').remove();
   $('#chat section.content[data-thread-id="' + id +'"]').remove();
   userInfo.subscribedThreads = userInfo.subscribedThreads.filter(function(e, i, a) {
@@ -263,13 +312,11 @@ function removeThread(id) {
   userInfo.fetchedThreads = userInfo.fetchedThreads.filter(function(e, i, a) {
     return e !== id + '';
   });
-  console.log('remove list after', userInfo.subscribedThreads);
 }
 
 function updateThreadContent(id, children) {
   $('#chat section.content[data-thread-id="' + id + '"] .body .messages .progress').remove();
 
-  console.log('children jskj', children);
   children.forEach(function(msg) {
     printMessage(msg);
   });

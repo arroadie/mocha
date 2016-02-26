@@ -99,6 +99,25 @@ server.on('connection', function(socket) {
     });
   });
 
+  socket.on('favorite-message', function(data) {
+    Log.srv(`[Favorite::${data.id}] – ${data.user_name}: ${data.message}`);
+
+    var req = Http.put(`/users/${data.user_name}/threads/${data.id}/favorite`)
+    .then(function(res) {
+      socket.emit('favorite-message', res);
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error adding message to favorites',
+        message: err
+      });
+    });
+  });
+
+  socket.on('create-room', function(data) {
+    console.log('data', data);
+  });
+
   socket.on('history', function(data) {
     var req = Http.get(`/threads/${data.parent_id}/children`)
     .then(function(res) {

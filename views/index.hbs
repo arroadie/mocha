@@ -10,6 +10,7 @@
   <!-- CSS -->
   <link href="/public/css/bootstrap.min.css" rel="stylesheet">
   <link href='/public/chat.css' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"></link>
 
   <!-- Fonts -->
   <link href='https://fonts.googleapis.com/css?family=Poppins:300' rel='stylesheet' type='text/css'>
@@ -21,7 +22,19 @@
   <div class="container-fluid">
     <div class="row">
       <div id="threads-list" class="col-sm-3 hidden-xs">
-        <h4>Threads</h4>
+        <div class="header">
+          <div class="button btn-group">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Actions <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="create-room" href="#">Create room</a></li>
+              <li><a class="private-chat" href="#">Private chat</a></li>
+            </ul>
+          </div>
+          <h4>Threads</h4>
+          <div class="clearfix"></div>
+        </div>
         <ul class="nav nav-pills nav-stacked"></ul>
       </div>
 

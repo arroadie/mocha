@@ -1,8 +1,11 @@
-<li {{#class}}class={{class}}{{/class}}>
+<li class="{{#class}}{{class}}{{/class}} message-object" data-thread-id="{{id}}">
   <p class="message-header">
     <span class="username">{{user_name}}</span>
     <span class="timestamp">{{datetime}}</span>
-    <span class=""><a href="#" class="reply" data-thread-id="{{id}}">reply</a></span>
+    <span class="">
+      <a href="#" class="reply" data-message-id="{{id}}">reply</a> - 
+      <a href="#" class="favorite" data-message-id="{{id}}" data-is-favorite="{{favorite}}">fav</a>
+    </span>
   </p>
   <p class="message">{{{message}}}</p>
 </li>
