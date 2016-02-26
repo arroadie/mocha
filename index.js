@@ -26,8 +26,16 @@ server.on('connection', function(socket) {
 
   socket.on('join', function(data) {
     console.log('join', data);
-    Log.srv(`Joined user '${data}' with socket id '${socket.id}'`);
-    usersPool[data] = socket;
+    var req = Http.put(`/users/${data}`, {user_name: data})
+    .then(function(res) {
+      socket.emit('joined', res);
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error login user',
+        message: err
+      });
+    });
   });
 
   socket.on('state', function(data) {

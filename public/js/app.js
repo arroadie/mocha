@@ -17,11 +17,9 @@ socket.on('message', function(data) {
 
 socket.on('state', function(data) {
   console.log('data', data);
-  data.forEach(function(key) {
-    renderThreadElement(key);
+  data.forEach(function(thread) {
+    renderThreadElement(thread.id, thread.message);
   });
-  //renderThreadContent(data[0]);
-  //socket.emit('thread-children', data[0]);
 });
 
 socket.on('thread-content', function(data) {
@@ -79,15 +77,25 @@ window.addEventListener("load", function() {
     if (roomName !== '') {
       createRoom(roomName);
     }
-    $('#threads-list .header .button').removeClass('open');
-    $('#threads-list .header .button button').attr('aria-expanded', false);
+    closeDropdownMenu();
     return false;
   });
 
   $('.private-chat').on('click', function(ev) {
     ev.preventDefault();
-    console.log('private-chat');
-    $('.open > .dropdown-menu').hide();
+    closeDropdownMenu();
+    return false;
+  });
+
+  $('.dropdown-menu .login').on('click', function(ev) {
+    login(ev);
+    closeDropdownMenu();
+    return false;
+  });
+
+  $('.dropdown-menu .logout').on('click', function(ev) {
+    logout(ev);
+    closeDropdownMenu();
     return false;
   });
 
@@ -97,6 +105,11 @@ window.addEventListener("load", function() {
   updateEvents();
   socket.emit('state', {user_name: getUser()});
 });
+
+function closeDropdownMenu() {
+  $('#threads-list .header .button').removeClass('open');
+  $('#threads-list .header .button button').attr('aria-expanded', false);
+}
 
 function login(ev) {
   ev.preventDefault();
