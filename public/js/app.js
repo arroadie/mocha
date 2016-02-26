@@ -49,8 +49,8 @@ socket.on('favorite-message', function(data) {
   }
 });
 
-socket.on('empty-thread', function(data) {
-  renderChat(data.id, data.history);
+socket.on('created-room', function(data) {
+  renderChat(data.id, data.message, []);
 });
 
 socket.on('inchat-notification', function(data) {
@@ -75,10 +75,10 @@ window.addEventListener("load", function() {
   $('.create-room').on('click', function(ev) {
     ev.preventDefault();
     var roomName = prompt('Set the room name:');
-    if (roomName === '') {
+    if (roomName !== '') {
       createRoom(roomName);
     }
-    $('#threads-list .header .button').removeAttr('open');
+    $('#threads-list .header .button').removeClass('open');
     $('#threads-list .header .button button').attr('aria-expanded', false);
     return false;
   });
@@ -168,7 +168,9 @@ function updateThreadsListEvents() {
 
 function createRoom(name) {
   socket.emit('create-room', {
-    user_id: getUser(),
+    user_id: -1,
+    user_name: getUser(),
+    parent_id: -1,
     message: name
   });
 }
@@ -324,8 +326,9 @@ function updateThreadContent(id, children) {
   updateChatEvents();
 }
 
-function renderChat(id, children) {
-  renderThreadElement(id);
+function renderChat(id, message, children) {
+  console.log('render chat', id, message);
+  renderThreadElement(id, message);
   renderThreadContent(id, children);
 }
 

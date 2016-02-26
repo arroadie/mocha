@@ -115,7 +115,18 @@ server.on('connection', function(socket) {
   });
 
   socket.on('create-room', function(data) {
-    console.log('data', data);
+    console.log('create room data', data);
+    var req = Http.put(`/threads/0`, data)
+    .then(function(res) {
+      console.log('creating room', res);
+      socket.emit('created-room', res);
+    })
+    .catch(function(err) {
+      socket.emit('notification', {
+        title: 'Error creating room',
+        message: err
+      });
+    });
   });
 
   socket.on('history', function(data) {
