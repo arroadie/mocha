@@ -3,6 +3,10 @@ html, body {
   height: 100%;
 }
 
+.content .header div h1 span {
+  font-size: 0.5em;
+}
+
 #threads-list {
   background-color: rgb(237, 239, 244);
   border-right: solid 1px #ccc;

@@ -16,7 +16,6 @@ socket.on('message', function(data) {
 });
 
 socket.on('state', function(data) {
-  console.log('data', data);
   data.forEach(function(thread) {
     renderThreadElement(thread.id, thread.message);
   });
@@ -76,6 +75,16 @@ window.addEventListener("load", function() {
     var roomName = prompt('Set the room name:');
     if (roomName !== '') {
       createRoom(roomName);
+    }
+    closeDropdownMenu();
+    return false;
+  });
+
+  $('.join-room').on('click', function(ev) {
+    ev.preventDefault();
+    var roomName = prompt('Put the room ID:');
+    if (roomName !== '') {
+      subscribeRoom(roomName);
     }
     closeDropdownMenu();
     return false;
@@ -205,6 +214,14 @@ function replyMessage(ev) {
     });
   }
   return false;
+}
+
+function subscribeRoom(id) {
+  renderThreadElement(id, id);
+  socket.emit('subscribe', {
+    parent_id: id,
+    user_name: getUser()
+  });
 }
 
 function favoriteMessage(ev) {
