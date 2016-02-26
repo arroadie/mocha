@@ -51,6 +51,7 @@ socket.on('favorite-message', function(data) {
 
 socket.on('created-room', function(data) {
   renderChat(data.id, data.message, []);
+  activateThread(data.id);
 });
 
 socket.on('inchat-notification', function(data) {
@@ -124,8 +125,10 @@ function activateThread(id) {
 
 function onThreadListClick(ev) {
   var id = $(this).attr('data-thread-id');
+  var name = $(this).attr('data-thread-name');
+  console.log('on click', name);
   if (getFetchedThread(id) < 0 && id !== 'home') {
-    renderThreadContent(id);
+    renderThreadContent(id, name);
     socket.emit('thread-children', id);
   }
   activateThread(id);
@@ -168,7 +171,6 @@ function updateThreadsListEvents() {
 
 function createRoom(name) {
   socket.emit('create-room', {
-    user_id: -1,
     user_name: getUser(),
     parent_id: -1,
     message: name
@@ -295,10 +297,11 @@ function renderThreadElement(id, name) {
   }
 }
 
-function renderThreadContent(id) {
+function renderThreadContent(id, name) {
+  name = name || id;
   if (getFetchedThread(id) < 0) {
     addFetchedThread(id);
-    var obj = {thread_id: id, name: id};
+    var obj = {thread_id: id, name: name};
     $('#chat').append(templates.thread(obj));
   }
   refreshUserData();
@@ -329,7 +332,8 @@ function updateThreadContent(id, children) {
 function renderChat(id, message, children) {
   console.log('render chat', id, message);
   renderThreadElement(id, message);
-  renderThreadContent(id, children);
+  renderThreadContent(id, message, children);
+  updateThreadContent(id, children);
 }
 
 function getSubscribedThread(id) {
