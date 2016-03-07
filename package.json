@@ -1,14 +1,14 @@
 {
-  "name": "deadpool",
+  "name": "mocha",
   "version": "0.0.0",
-  "description": "Message oriented chat service",
+  "description": "Message Oriented CHat Application",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.groupondev.com:caipibros/deadpool.git"
+    "url": "git@github.com:arroadie/mocha.git"
   },
   "author": "",
   "license": "MIT",
